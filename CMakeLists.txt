@@ -2,9 +2,16 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SPTH)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+# Notify about everything, Set standard to C++17, include curlpp & curl
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++17 -lcurlpp -lcurl")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 add_executable(shortest-path-to-hitler main.cpp)
 
+# Prevent JSON tests from running
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+
+add_subdirectory(nlohmann_json)
+
+target_link_libraries(shortest-path-to-hitler PRIVATE curlpp nlohmann_json::nlohmann_json)
