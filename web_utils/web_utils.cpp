@@ -6,18 +6,15 @@
 
 namespace web_utils
 {
-    json getPageLinks(const std::string& page)
+    std::vector<std::string> getPageLinks(const std::string& page)
     {
         if(cache_utils::isCached(page))
-        {
-            std::cout << "Cached\n";
-            return json::parse(cache_utils::readFromCache(page));
-        }
+            return cache_utils::readFromCache(page);
 
-        json content = json::parse(web_utils::_requestPage(page));
-        cache_utils::cacheFile(page, content);
+        std::vector<std::string> links = cache_utils::getLinksFromJson(json::parse(web_utils::_requestPage(page)));
+        cache_utils::cacheFile(page, links);
 
-        return content;
+        return links;
     }
 
     std::string _requestPage(const std::string& page)

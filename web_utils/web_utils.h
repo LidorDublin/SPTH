@@ -7,6 +7,7 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <queue>
 
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
@@ -22,7 +23,7 @@ using nlohmann::json;
 namespace web_utils
 {
 //public:
-    json getPageLinks(const std::string& page);
+    std::vector<std::string> getPageLinks(const std::string& page);
 
 //private:
     const std::string _WIKI_URL = "https://en.wikipedia.org/w/api.php?action=parse&prop=links&format=json&page=";

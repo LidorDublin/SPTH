@@ -8,6 +8,11 @@ using std::endl;
 
 int main()
 {
-    cout << std::setw(4) << web_utils::getPageLinks("google");
+    std::vector<std::string> links = web_utils::getPageLinks("facebook");
+
+    for(auto& link : links)
+        std::cout << link << std::endl;
+
+//    cout << std::setw(4) << web_utils::getPageLinks("google");
     return 0;
 }
