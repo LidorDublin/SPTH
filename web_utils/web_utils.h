@@ -13,6 +13,8 @@
 #include <curlpp/Options.hpp>
 #include <curlpp/Exception.hpp>
 
+#include "../cache_utils/cache_utils.h"
+
 #include "nlohmann/json.hpp"
 
 using nlohmann::json;

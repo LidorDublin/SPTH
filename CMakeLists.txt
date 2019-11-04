@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++17 -lcurlpp -lcurl")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
-add_executable(shortest-path-to-hitler main.cpp web_utils/web_utils.cpp web_utils/web_utils.h cache_utils/cache_utils.h)
+add_executable(shortest-path-to-hitler main.cpp web_utils/web_utils.cpp web_utils/web_utils.h cache_utils/cache_utils.h cache_utils/cache_utils.cpp)
 
 # Prevent JSON tests from running
 set(JSON_BuildTests OFF CACHE INTERNAL "")
