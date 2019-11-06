@@ -23,7 +23,7 @@ using nlohmann::json;
 namespace web_utils
 {
 //public:
-    std::vector<std::string> getPageLinks(const std::string& page);
+    void getPageLinks(tree* links);
 
 //private:
     const std::string _WIKI_URL = "https://en.wikipedia.org/w/api.php?action=parse&prop=links&format=json&page=";

@@ -31,7 +31,7 @@ namespace cache_utils
         return _fileExists(page);
     }
 
-    std::vector<std::string> readFromCache(const std::string& page)
+    void readFromCache(const std::string& page, tree* links)
     {
         if(!cache_utils::isCached(page))
 //        throw std::exception("File not cached");
@@ -43,15 +43,11 @@ namespace cache_utils
             throw std::exception();
 
         std::string line;
-        std::vector<std::string> links;
-
         while(std::getline(file, line))
         {
             if(line.length())
-                links.push_back(line);
+                links->addLink(line);
         }
-
-        return links;
     }
 
     bool cacheFile(const std::string& page, const json& content)
@@ -65,7 +61,7 @@ namespace cache_utils
         return true;
     }
 
-    bool cacheFile(const std::string& page, const std::vector<std::string>& content)
+    bool cacheFile(const std::string& page, std::vector<std::string>& content)
     {
         std::ofstream file(cache_utils::_returnFormattedName(page));
         if(!file.is_open())
@@ -74,9 +70,21 @@ namespace cache_utils
 
         for(auto& link : content)
         {
-            std::cout << link << std::endl;
             file << link << '\n';
         }
+        return true;
+    }
+
+    bool cacheFile(const std::string& page, const std::vector<tree*>& links)
+    {
+        std::ofstream file(cache_utils::_returnFormattedName(page));
+        if(!file.is_open())
+            // Handle error
+            return false;
+
+        for(tree* link : links)
+            file << link->getPage() << '\n';
+
         return true;
     }
 
@@ -85,7 +93,7 @@ namespace cache_utils
         return std::string(".cache/") + page;
     }
 
-    std::vector<std::string> getLinksFromJson(const json& content)
+    void getLinksFromJson(const json& content, tree* links)
     {
          if(!content.contains("parse"))
 //              Handle exception
@@ -98,10 +106,8 @@ namespace cache_utils
             throw std::exception();
 //            throw std::exception("JSON not in regular format");
 
-        temp = temp.at("links");
 
-        std::vector<std::string> links;
-        for(auto&& [idx, link] : temp.items())
+        for(auto&& [idx, link] : temp.at("links").items())
         {
             if(!link.contains("exists") || link.at("ns").get<int>())
                 continue;
@@ -109,10 +115,10 @@ namespace cache_utils
             for(auto&& [key, value] : link.items())
             {
                 if(key == "*" && value.is_string())
-                    links.push_back(value.get<std::string>());
+                    links->addLink(value.get<std::string>());
             }
         }
 
-        return links;
+        cache_utils::cacheFile(links->getPage(), links->getLinks());
     }
 }
