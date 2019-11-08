@@ -12,7 +12,7 @@
 
 #include <algorithm>
 
-#include "../tree/tree.h"
+#include "../wikiPage/wikiPage.h"
 
 #include "nlohmann/json.hpp"
 
@@ -26,10 +26,10 @@ namespace cache_utils
 
     bool isCached(const std::string& page);
 
-    void readFromCache(const std::string& page, tree* links);
+    void readFromCache(const std::string& page, wikiPage* links);
     bool cacheFile(const std::string& page, const json& content);
     bool cacheFile(const std::string& page, const std::vector<std::string>& content);
-    bool cacheFile(const std::string& page, const std::vector<tree*>& links);
+    bool cacheFile(const std::string& page, const std::vector<wikiPage*>& links);
 
-    void getLinksFromJson(const json& content, tree*);
+    void getLinksFromJson(const json& content, wikiPage*);
 }

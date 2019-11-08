@@ -6,7 +6,7 @@
 
 namespace web_utils
 {
-    void getPageLinks(tree* links)
+    void getPageLinks(wikiPage* links)
     {
         if(cache_utils::isCached(links->getPage()))
             cache_utils::readFromCache(links->getPage(), links);

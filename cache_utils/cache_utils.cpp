@@ -31,7 +31,7 @@ namespace cache_utils
         return _fileExists(page);
     }
 
-    void readFromCache(const std::string& page, tree* links)
+    void readFromCache(const std::string& page, wikiPage* links)
     {
         if(!cache_utils::isCached(page))
 //        throw std::exception("File not cached");
@@ -75,14 +75,14 @@ namespace cache_utils
         return true;
     }
 
-    bool cacheFile(const std::string& page, const std::vector<tree*>& links)
+    bool cacheFile(const std::string& page, const std::vector<wikiPage*>& links)
     {
         std::ofstream file(cache_utils::_returnFormattedName(page));
         if(!file.is_open())
             // Handle error
             return false;
 
-        for(tree* link : links)
+        for(wikiPage* link : links)
             file << link->getPage() << '\n';
 
         return true;
@@ -93,7 +93,7 @@ namespace cache_utils
         return std::string(".cache/") + page;
     }
 
-    void getLinksFromJson(const json& content, tree* links)
+    void getLinksFromJson(const json& content, wikiPage* links)
     {
          if(!content.contains("parse"))
 //              Handle exception

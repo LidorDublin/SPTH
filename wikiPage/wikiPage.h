@@ -9,20 +9,20 @@
 
 #include <utility>
 
-class tree
+class wikiPage
 {
 public:
-    explicit tree(int depth, std::string page, std::vector<tree*>  value);
-    explicit tree(int depth, std::string page);
+    explicit wikiPage(int depth, std::string page, std::vector<wikiPage*>  value);
+    explicit wikiPage(int depth, std::string page);
 
-    virtual ~tree();
+    virtual ~wikiPage();
 
-    void addLink(tree* link);
+    void addLink(wikiPage* link);
     void addLink(std::string link);
 
     const std::string& getPage() const;
 
-    const std::vector<tree*>& getLinks() const;
+    const std::vector<wikiPage*>& getLinks() const;
 
     int numOfLinks() const;
 
@@ -36,6 +36,6 @@ protected:
     int _depth;
 
     std::string _page;
-    std::vector<tree*> _links{};
+    std::vector<wikiPage*> _links{};
 };
 
