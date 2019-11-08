@@ -6,15 +6,13 @@
 
 namespace web_utils
 {
-    std::vector<std::string> getPageLinks(const std::string& page)
+    void getPageLinks(wikiPage* links)
     {
-        if(cache_utils::isCached(page))
-            return cache_utils::readFromCache(page);
+        if(cache_utils::isCached(links->getPage()))
+            cache_utils::readFromCache(links->getPage(), links);
 
-        std::vector<std::string> links = cache_utils::getLinksFromJson(json::parse(web_utils::_requestPage(page)));
-        cache_utils::cacheFile(page, links);
-
-        return links;
+        else
+            cache_utils::getLinksFromJson(json::parse(web_utils::_requestPage(links->getPage())), links);
     }
 
     std::string _requestPage(const std::string& page)
@@ -35,11 +33,11 @@ namespace web_utils
 
             return content.str();
         }
-        catch ( curlpp::LogicError & e )
+        catch (curlpp::LogicError& e)
         {
             std::cout << e.what() << std::endl;
         }
-        catch ( curlpp::RuntimeError & e )
+        catch (curlpp::RuntimeError& e)
         {
             std::cout << e.what() << std::endl;
         }

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="SPTH"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\nlohmann_json\;CMake Files\nlohmann_json\cmake\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/lidor/Personal/projects/SPTH"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="/home/lidor/Personal/projects/SPTH"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/lidor/Personal/projects/SPTH"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/lidor/Personal/projects/SPTH"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="/home/lidor/Personal/projects/SPTH"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="/home/lidor/Personal/projects/SPTH"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="shortest-path-to-hitler">
+				<Option output="/home/lidor/Personal/projects/SPTH/shortest-path-to-hitler" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/lidor/Personal/projects/SPTH"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/lidor/Personal/projects/SPTH/nlohmann_json/single_include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 shortest-path-to-hitler"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="shortest-path-to-hitler/fast">
+				<Option output="/home/lidor/Personal/projects/SPTH/shortest-path-to-hitler" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/lidor/Personal/projects/SPTH"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/lidor/Personal/projects/SPTH/nlohmann_json/single_include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 shortest-path-to-hitler/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="/home/lidor/Personal/projects/SPTH"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Continuous">
+				<Option working_dir="/home/lidor/Personal/projects/SPTH/nlohmann_json"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 Continuous"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Experimental">
+				<Option working_dir="/home/lidor/Personal/projects/SPTH/nlohmann_json"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 Experimental"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Nightly">
+				<Option working_dir="/home/lidor/Personal/projects/SPTH/nlohmann_json"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 Nightly"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/lidor/Personal/projects/SPTH/nlohmann_json/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/lidor/Personal/projects/SPTH/cache_utils/cache_utils.cpp">
+			<Option target="shortest-path-to-hitler"/>
+		</Unit>
+		<Unit filename="/home/lidor/Personal/projects/SPTH/cache_utils/cache_utils.h">
+			<Option target="shortest-path-to-hitler"/>
+		</Unit>
+		<Unit filename="/home/lidor/Personal/projects/SPTH/main.cpp">
+			<Option target="shortest-path-to-hitler"/>
+		</Unit>
+		<Unit filename="/home/lidor/Personal/projects/SPTH/web_utils/web_utils.cpp">
+			<Option target="shortest-path-to-hitler"/>
+		</Unit>
+		<Unit filename="/home/lidor/Personal/projects/SPTH/web_utils/web_utils.h">
+			<Option target="shortest-path-to-hitler"/>
+		</Unit>
+		<Unit filename="/home/lidor/Personal/projects/SPTH/wikiPage/wikiPage.cpp">
+			<Option target="shortest-path-to-hitler"/>
+		</Unit>
+		<Unit filename="/home/lidor/Personal/projects/SPTH/wikiPage/wikiPage.h">
+			<Option target="shortest-path-to-hitler"/>
+		</Unit>
+		<Unit filename="/home/lidor/Personal/projects/SPTH/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/lidor/Personal/projects/SPTH/nlohmann_json/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\nlohmann_json\"/>
+		</Unit>
+		<Unit filename="/home/lidor/Personal/projects/SPTH/nlohmann_json/cmake/config.cmake.in">
+			<Option virtualFolder="CMake Files\nlohmann_json\cmake\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

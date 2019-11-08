@@ -12,6 +12,8 @@
 
 #include <algorithm>
 
+#include "../wikiPage/wikiPage.h"
+
 #include "nlohmann/json.hpp"
 
 using nlohmann::json;
@@ -24,9 +26,10 @@ namespace cache_utils
 
     bool isCached(const std::string& page);
 
-    std::vector<std::string> readFromCache(const std::string& page);
+    void readFromCache(const std::string& page, wikiPage* links);
     bool cacheFile(const std::string& page, const json& content);
     bool cacheFile(const std::string& page, const std::vector<std::string>& content);
+    bool cacheFile(const std::string& page, const std::vector<wikiPage*>& links);
 
-    std::vector<std::string> getLinksFromJson(const json& content);
+    void getLinksFromJson(const json& content, wikiPage*);
 }

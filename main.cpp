@@ -2,6 +2,7 @@
 #include <iomanip>
 
 #include "web_utils/web_utils.h"
+#include "wikiPage/wikiPage.h"
 
 #define DEFAULT_TEST_PAGE "google"
 
@@ -10,11 +11,16 @@ using std::endl;
 
 int main(int argc, char** argv)
 {
-    std::vector<std::string> links = web_utils::getPageLinks(argc > 1 ?  argv[1] : DEFAULT_TEST_PAGE);
+    wikiPage links(argc > 1 ?  argv[1] : DEFAULT_TEST_PAGE);
+//    cout << links.getPage() << endl;
 
-    for(auto& link : links)
-        std::cout << link << std::endl;
+    links.getWikiPageLinks();
 
-//    cout << std::setw(4) << web_utils::getPageLinks("google");
+    for(auto& link : links.getLinks())
+        std::cout << link->getPage() << std::endl;
+
+//    cout << wikiPage::totalNumOfLinks() << endl;
+//    cout << links.numOfLinks() << endl;
+
     return 0;
 }
