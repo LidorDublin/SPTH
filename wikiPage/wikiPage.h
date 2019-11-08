@@ -9,11 +9,16 @@
 
 #include <utility>
 
+class wikiPage;
+
+#include "../web_utils/web_utils.h"
+
 class wikiPage
 {
 public:
     explicit wikiPage(int depth, std::string page, std::vector<wikiPage*>  value);
     explicit wikiPage(int depth, std::string page);
+    explicit wikiPage(std::string page);
 
     virtual ~wikiPage();
 
@@ -23,6 +28,8 @@ public:
     const std::string& getPage() const;
 
     const std::vector<wikiPage*>& getLinks() const;
+
+    void getWikiPageLinks();
 
     int numOfLinks() const;
 

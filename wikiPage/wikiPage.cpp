@@ -18,6 +18,10 @@ wikiPage::wikiPage(int depth, std::string page) : _depth(depth), _page(std::move
 {
 }
 
+wikiPage::wikiPage(std::string page) : wikiPage(0, page)
+{
+}
+
 wikiPage::~wikiPage()
 {
     for(auto&& link : this->_links)
@@ -54,5 +58,10 @@ int wikiPage::numOfLinks() const
 unsigned long wikiPage::totalNumOfLinks()
 {
     return wikiPage::_totalNumOfLinks;
+}
+
+void wikiPage::getWikiPageLinks()
+{
+    web_utils::getPageLinks(this);
 }
 

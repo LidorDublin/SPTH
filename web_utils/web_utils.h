@@ -14,6 +14,7 @@
 #include <curlpp/Options.hpp>
 #include <curlpp/Exception.hpp>
 
+#include "../wikiPage/wikiPage.h"
 #include "../cache_utils/cache_utils.h"
 
 #include "nlohmann/json.hpp"

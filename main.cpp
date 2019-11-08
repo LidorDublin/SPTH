@@ -11,10 +11,10 @@ using std::endl;
 
 int main(int argc, char** argv)
 {
-    wikiPage links(0, argc > 1 ?  argv[1] : DEFAULT_TEST_PAGE);
+    wikiPage links(argc > 1 ?  argv[1] : DEFAULT_TEST_PAGE);
 //    cout << links.getPage() << endl;
 
-    web_utils::getPageLinks(&links);
+    links.getWikiPageLinks();
 
     for(auto& link : links.getLinks())
         std::cout << link->getPage() << std::endl;
