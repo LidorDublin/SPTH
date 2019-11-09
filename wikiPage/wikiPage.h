@@ -31,11 +31,15 @@ public:
 
     void getWikiPageLinks();
 
+    wikiPage* getWikiPageLinksRecursively();
+
     int numOfLinks() const;
 
-    static unsigned long totalNumOfLinks();
+    static bool bingo(const std::string& str);
 
-    const static unsigned short MAX_DEPTH = 3;
+    inline const static std::string HITLER = "Adolf Hitler";
+    static unsigned long totalNumOfLinks();
+    const static unsigned short MAX_DEPTH = 5;
 
 protected:
     static unsigned long _totalNumOfLinks;

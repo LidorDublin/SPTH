@@ -18,7 +18,7 @@ wikiPage::wikiPage(int depth, std::string page) : _depth(depth), _page(std::move
 {
 }
 
-wikiPage::wikiPage(std::string page) : wikiPage(0, page)
+wikiPage::wikiPage(std::string page) : wikiPage(1, page)
 {
 }
 
@@ -65,3 +65,39 @@ void wikiPage::getWikiPageLinks()
     web_utils::getPageLinks(this);
 }
 
+wikiPage* wikiPage::getWikiPageLinksRecursively()
+{
+//    std::cout << this->_page << ' ' << (this->_page == "Adolf Hitler") << ' ' << this->_depth << '\n';
+
+    if (this->_depth == wikiPage::MAX_DEPTH)
+        return nullptr;
+
+    this->getWikiPageLinks();
+
+    auto begin = this->_links.begin();
+    auto end = this->_links.end();
+
+    auto linkIter = std::find_if(begin, end, [](wikiPage *link) {
+        return wikiPage::bingo(link->_page);
+    });
+    if (linkIter != end)
+        return *linkIter;
+
+    for(auto& link : this->_links)
+        if(auto page = link->getWikiPageLinksRecursively())
+            return page;
+
+    return nullptr;
+}
+
+bool wikiPage::bingo(const std::string& str)
+{
+    if(str.length() != wikiPage::HITLER.length())
+        return false;
+
+    auto it = std::search(str.begin(), str.end(), wikiPage::HITLER.begin(), wikiPage::HITLER.end(), [](char chr1, char chr2){
+        return std::tolower(chr1) == std::tolower(chr2);
+    });
+
+    return it != str.end();
+}
