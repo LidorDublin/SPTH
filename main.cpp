@@ -11,6 +11,7 @@
 using std::cout;
 
 void handler(sig_atomic_t s);
+void printSummary();
 
 int main(int argc, char** argv)
 {
@@ -30,12 +31,21 @@ int main(int argc, char** argv)
 //    cout << wikiPage::totalNumOfLinks() << '\n';
 //    cout << links.numOfLinks() << '\n';
 
-    std::cout << "\nTotal number of links fetched: " << wikiPage::totalNumOfLinks() << '\n';
+    printSummary();
     return 0;
 }
 
-void handler(sig_atomic_t s)
+void handler(sig_atomic_t)
 {
-    std::cout << "\nTotal number of links fetched: " << wikiPage::totalNumOfLinks() << '\n';
+    printSummary();
     exit(1);
+}
+
+void printSummary()
+{
+    std::cout << "\n--------------------------------------------\n";
+    std::cout << "Summary:\n\n";
+    std::cout << "Total number of links collected: " << wikiPage::totalNumOfLinks() << '\n';
+    std::cout << "Number of visited links: " << cache_utils::_visitedPages.size() << '\n';
+    std::cout << "Number of revisited links: " << cache_utils::timesRevisited << '\n';
 }

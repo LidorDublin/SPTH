@@ -17,7 +17,7 @@ wikiPage::wikiPage(int depth, std::string page) : _depth(depth), _page(std::move
 {
 }
 
-wikiPage::wikiPage(std::string page) : wikiPage(1, page)
+wikiPage::wikiPage(std::string page) : wikiPage(1, std::move(page))
 {
 }
 
@@ -73,7 +73,7 @@ wikiPage* wikiPage::getWikiPageLinksRecursively()
 
     if(cache_utils::isPageVisited(this->_page))
         return nullptr;
-//     Insert page to visitedPages caching set
+//    Insert page to visitedPages caching set
     cache_utils::visitPage(this->_page);
 
     this->getWikiPageLinks();

@@ -6,6 +6,7 @@
 
 namespace cache_utils
 {
+    unsigned long timesRevisited = 0;
     std::set<std::string> _visitedPages;
 
     bool _cacheDirExists()
@@ -125,7 +126,13 @@ namespace cache_utils
 
     bool isPageVisited(const std::string& page)
     {
-        return cache_utils::_visitedPages.end() != cache_utils::_visitedPages.find(page);
+        if(cache_utils::_visitedPages.find(page) != cache_utils::_visitedPages.end())
+        {
+            timesRevisited++;
+            return true;
+        }
+
+        return false;
     }
 
     void visitPage(const std::string& page)

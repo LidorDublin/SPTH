@@ -35,5 +35,8 @@ namespace cache_utils
     bool isPageVisited(const std::string& page);
     void visitPage(const std::string& page);
 
+    extern unsigned long timesRevisited;
+    extern std::set<std::string> _visitedPages;
+
     void getLinksFromJson(const json& content, wikiPage*);
 }
