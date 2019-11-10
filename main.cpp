@@ -22,8 +22,15 @@ int main(int argc, char** argv)
 //    cout << links.getPage() << '\n';
 
 //    links.getWikiPageLinks();
-    auto _ = links.getWikiPageLinksRecursively();
+    std::queue<std::string> q;
+    auto _ = links.getWikiPageLinksRecursively(q);
     std::cout << (!_ ? "Nullptr" : _->getPage()) << '\n';
+
+    while(!q.empty())
+    {
+        std::cout << q.front() << (1 == q.size() ? "\n" : " -> ");
+        q.pop();
+    }
 
 //    for(auto& link : links.getLinks())
 //        std::cout << link->getPage() << '\n';

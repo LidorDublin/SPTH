@@ -10,6 +10,8 @@
 #include <utility>
 #include <iostream>
 
+#include <queue>
+
 class wikiPage;
 
 #include "../web_utils/web_utils.h"
@@ -32,7 +34,7 @@ public:
 
     void getWikiPageLinks();
 
-    wikiPage* getWikiPageLinksRecursively();
+    wikiPage* getWikiPageLinksRecursively(std::queue<std::string>& q);
 
     int numOfLinks() const;
 
