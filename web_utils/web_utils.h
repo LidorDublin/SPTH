@@ -28,7 +28,7 @@ namespace web_utils
 
 //private:
     const std::string _WIKI_URL = "https://en.wikipedia.org/w/api.php?action=parse&prop=links&format=json&page=";
-    const std::string _ILLEGAL_CHARACTERS = "&+";
+    const std::string _ILLEGAL_CHARACTERS = "&+/";
     std::string _requestPage(const std::string& page);
     bool _isValidPage(const std::string& page);
 }

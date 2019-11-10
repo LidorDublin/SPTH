@@ -2,11 +2,12 @@
 // Created by lidor on 11/3/19.
 //
 
-#include <iostream>
 #include "cache_utils.h"
 
 namespace cache_utils
 {
+    std::set<std::string> _visitedPages;
+
     bool _cacheDirExists()
     {
         // Check if can be removed
@@ -120,5 +121,15 @@ namespace cache_utils
         }
 
         cache_utils::cacheFile(links->getPage(), links->getLinks());
+    }
+
+    bool isPageVisited(const std::string& page)
+    {
+        return cache_utils::_visitedPages.end() != cache_utils::_visitedPages.find(page);
+    }
+
+    void visitPage(const std::string& page)
+    {
+        cache_utils::_visitedPages.insert(page);
     }
 }

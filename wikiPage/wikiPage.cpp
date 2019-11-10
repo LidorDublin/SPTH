@@ -2,7 +2,6 @@
 // Created by lidor on 11/4/19.
 //
 
-#include <iostream>
 #include "wikiPage.h"
 
 unsigned long wikiPage::_totalNumOfLinks = 0;
@@ -72,14 +71,19 @@ wikiPage* wikiPage::getWikiPageLinksRecursively()
     if (this->_depth == wikiPage::MAX_DEPTH)
         return nullptr;
 
+    if(cache_utils::isPageVisited(this->_page))
+        return nullptr;
+//     Insert page to visitedPages caching set
+    cache_utils::visitPage(this->_page);
+
     this->getWikiPageLinks();
 
     auto begin = this->_links.begin();
     auto end = this->_links.end();
-
     auto linkIter = std::find_if(begin, end, [](wikiPage *link) {
         return wikiPage::bingo(link->_page);
     });
+
     if (linkIter != end)
         return *linkIter;
 

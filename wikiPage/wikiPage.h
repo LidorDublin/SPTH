@@ -8,6 +8,7 @@
 #include <string>
 
 #include <utility>
+#include <iostream>
 
 class wikiPage;
 
