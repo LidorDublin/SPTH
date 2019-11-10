@@ -8,6 +8,9 @@ namespace web_utils
 {
     void getPageLinks(wikiPage* links)
     {
+        if(!_isValidPage(links->getPage()))
+            return;
+
         if(cache_utils::isCached(links->getPage()))
             cache_utils::readFromCache(links->getPage(), links);
 
@@ -35,12 +38,19 @@ namespace web_utils
         }
         catch (curlpp::LogicError& e)
         {
-            std::cout << e.what() << std::endl;
+            std::cout << e.what() << '\n';
         }
         catch (curlpp::RuntimeError& e)
         {
-            std::cout << e.what() << std::endl;
+            std::cout << e.what() << '\n';
         }
         return "Error";
+    }
+
+    bool _isValidPage(const std::string& page)
+    {
+        return page.end() == std::find_if(page.begin(), page.end(), [](char ch){
+            return _ILLEGAL_CHARACTERS.find(ch) != std::string::npos;
+        });
     }
 }
