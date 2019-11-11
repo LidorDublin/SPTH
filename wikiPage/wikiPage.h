@@ -20,8 +20,8 @@ class wikiPage;
 class wikiPage
 {
 public:
-    explicit wikiPage(int depth, std::string  page, std::vector<wikiPage*>  links);
-    explicit wikiPage(int depth, std::string page);
+    explicit wikiPage(int depth, std::string  page, std::vector<wikiPage*>  links, wikiPage* parent);
+    explicit wikiPage(int depth, std::string page, wikiPage* parent);
     explicit wikiPage(std::string page);
 
     virtual ~wikiPage();
@@ -49,6 +49,8 @@ protected:
     static unsigned long _totalNumOfLinks;
 
     int _depth;
+
+    wikiPage* _parent;
 
     std::string _page;
     std::vector<wikiPage*> _links{};

@@ -8,16 +8,18 @@
 
 unsigned long wikiPage::_totalNumOfLinks = 0;
 
-wikiPage::wikiPage(int depth, std::string  page, std::vector<wikiPage*> links) : _depth(depth), _page(std::move(page)), _links(std::move(links))
+wikiPage::wikiPage(int depth, std::string  page, std::vector<wikiPage*> links, wikiPage* parent) :
+_depth(depth), _parent(parent), _page(std::move(page)), _links(std::move(links))
 {
     wikiPage::_totalNumOfLinks += links.size();
 }
 
-wikiPage::wikiPage(int depth, std::string page) : wikiPage(depth, std::move(page), std::vector<wikiPage*>())
+wikiPage::wikiPage(int depth, std::string page, wikiPage* parent) :
+wikiPage(depth, std::move(page), std::vector<wikiPage*>(), parent)
 {
 }
 
-wikiPage::wikiPage(std::string page) : wikiPage(1, std::move(page))
+wikiPage::wikiPage(std::string page) : wikiPage(1, std::move(page), nullptr)
 {
 }
 
@@ -35,8 +37,7 @@ void wikiPage::addLink(wikiPage* link)
 
 void wikiPage::addLink(std::string link)
 {
-    this->_links.push_back(new wikiPage(this->_depth + 1, std::move(link)));
-    wikiPage::_totalNumOfLinks++;
+    this->addLink(new wikiPage(this->_depth + 1, std::move(link), this));
 }
 
 const std::string &wikiPage::getPage() const
