@@ -22,14 +22,14 @@ int main(int argc, char** argv)
 //    cout << links.getPage() << '\n';
 
 //    links.getWikiPageLinks();
-    std::queue<std::string> q;
-    auto _ = links.getWikiPageLinksRecursively(q);
-    std::cout << (!_ ? "Nullptr" : _->getPage()) << '\n';
+    std::vector<std::deque<std::string>> paths;
+    links.getWikiPageLinksRecursively(paths);
 
-    while(!q.empty())
+    for (const auto& path : paths)
     {
-        std::cout << q.front() << (1 == q.size() ? "\n" : " -> ");
-        q.pop();
+        for (const auto &page : path)
+            std::cout << page << " -> ";
+        std::cout << "Adolf Hitler\n";
     }
 
 //    for(auto& link : links.getLinks())

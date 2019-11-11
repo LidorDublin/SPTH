@@ -10,7 +10,8 @@
 #include <utility>
 #include <iostream>
 
-#include <queue>
+#include <deque>
+#include <vector>
 
 class wikiPage;
 
@@ -34,7 +35,7 @@ public:
 
     void getWikiPageLinks();
 
-    wikiPage* getWikiPageLinksRecursively(std::queue<std::string>& q);
+    wikiPage* getWikiPageLinksRecursively(std::vector<std::deque<std::string>>& paths);
 
     int numOfLinks() const;
 

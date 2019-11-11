@@ -64,7 +64,7 @@ void wikiPage::getWikiPageLinks()
     web_utils::getPageLinks(this);
 }
 
-wikiPage* wikiPage::getWikiPageLinksRecursively(std::queue<std::string>& q)
+wikiPage* wikiPage::getWikiPageLinksRecursively(std::vector<std::deque<std::string>>& paths)
 {
 //    std::cout << this->_page << ' ' << (this->_page == "Adolf Hitler") << ' ' << this->_depth << '\n';
 
@@ -76,7 +76,6 @@ wikiPage* wikiPage::getWikiPageLinksRecursively(std::queue<std::string>& q)
 //    Insert page to visitedPages caching set
     cache_utils::visitPage(this->_page);
 
-    q.push(this->_page);
     this->getWikiPageLinks();
 
     auto begin = this->_links.begin();
@@ -86,13 +85,22 @@ wikiPage* wikiPage::getWikiPageLinksRecursively(std::queue<std::string>& q)
     });
 
     if (linkIter != end)
+    {
+        std::deque<std::string> deq;
+        deq.push_back(this->_page);
+        paths.push_back(deq);
         return *linkIter;
+    }
 
     for(auto& link : this->_links)
-        if(auto page = link->getWikiPageLinksRecursively(q))
-            return page;
+    {
+        if(link->getWikiPageLinksRecursively(paths))
+        {
+            paths.front().push_front(this->_page);
+            return this;
+        }
+    }
 
-    q.pop();
     return nullptr;
 }
 
