@@ -4,16 +4,16 @@
 
 #include "wikiPage.h"
 
+#include <utility>
+
 unsigned long wikiPage::_totalNumOfLinks = 0;
 
-wikiPage::wikiPage(int depth, std::string page, std::vector<wikiPage*> value)
+wikiPage::wikiPage(int depth, std::string  page, std::vector<wikiPage*> links) : _depth(depth), _page(std::move(page)), _links(std::move(links))
 {
-    wikiPage::_totalNumOfLinks += value.size();
-    wikiPage(depth, std::move(page));
-    this->_links = std::move(value);
+    wikiPage::_totalNumOfLinks += links.size();
 }
 
-wikiPage::wikiPage(int depth, std::string page) : _depth(depth), _page(std::move(page)), _links(std::vector<wikiPage*>())
+wikiPage::wikiPage(int depth, std::string page) : wikiPage(depth, std::move(page), std::vector<wikiPage*>())
 {
 }
 

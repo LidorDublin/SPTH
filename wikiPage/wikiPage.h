@@ -20,7 +20,7 @@ class wikiPage;
 class wikiPage
 {
 public:
-    explicit wikiPage(int depth, std::string page, std::vector<wikiPage*>  value);
+    explicit wikiPage(int depth, std::string  page, std::vector<wikiPage*>  links);
     explicit wikiPage(int depth, std::string page);
     explicit wikiPage(std::string page);
 
