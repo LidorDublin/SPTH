@@ -41,3 +41,7 @@ cmake_install.cmake
 
 # Cache
 .cache
+
+peda-session*
+*.md
+!README.md
