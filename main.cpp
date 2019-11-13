@@ -25,16 +25,27 @@ int main(int argc, char** argv)
 
     wikiPage links(argc > 1 ?  argv[1] : DEFAULT_TEST_PAGE);
 
-    std::vector<std::deque<std::string>> paths;
+//    std::priority_queue<std::deque<std::string>> paths;
+    pathsQueue paths;
     links.getWikiPageLinksRecursively(paths);
 
     std::cout << "\n--------------------------------------------\n";
     std::cout << ANSII_UNDERLINE "Paths found" ANSII_RESET ": " << '\n';
-    for (const auto& path : paths)
+//    for (const auto& path : paths)
+//    {
+//        for (const auto &page : path)
+//            std::cout << page << " -> ";
+//        std::cout << "Adolf Hitler\n";
+//    }
+
+//    for (const auto& path : paths)
+    while(!paths.empty())
     {
-        for (const auto &page : path)
+        for (const auto &page : paths.top())
             std::cout << page << " -> ";
         std::cout << "Adolf Hitler\n";
+
+        paths.pop();
     }
 
     printSummary();

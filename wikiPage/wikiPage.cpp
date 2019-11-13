@@ -71,20 +71,20 @@ void wikiPage::getWikiPageLinks()
     web_utils::getPageLinks(this);
 }
 
-wikiPage* wikiPage::getWikiPageLinksRecursively(std::vector<std::deque<std::string>>& paths)
+void wikiPage::getWikiPageLinksRecursively(pathsQueue& paths)
 {
     wikiPage::_totalNumOfProcessedLinks++;
 
 //    std::cout << this->_page << ' ' << wikiPage::bingo(this->_page) << ' ' << this->_depth << '\n';
 
-    if(paths.size() == 16)
-        return nullptr;
+    if(paths.size() == 25)
+        return;
 
     if (this->_depth == wikiPage::MAX_DEPTH)
-        return nullptr;
+        return;
 
     if(cache_utils::isPageVisited(this->_page))
-        return nullptr;
+        return;
 //    Insert page to visitedPages caching set
     cache_utils::visitPage(this->_page);
 
@@ -93,20 +93,20 @@ wikiPage* wikiPage::getWikiPageLinksRecursively(std::vector<std::deque<std::stri
     {
         if(wikiPage::bingo(link->_page))
         {
-            std::cout << "Found " << paths.size() + 1 << " paths already!\n";
+            std::cout << "Found " << paths.size() + 1 << " paths already!\t|  ";
 
             std::deque<std::string> deq;
             deq.push_front(this->_page);
             this->getAllParentsPages(deq);
-            paths.push_back(deq);
-
-            return this;
+            std::for_each(deq.begin(), deq.end(), [](const std::string& page){
+                std::cout << page << " -> ";
+            });
+            std::cout << wikiPage::HITLER << '\n';
+            paths.push(deq);
         }
         else
             link->getWikiPageLinksRecursively(paths);
     }
-
-    return this;
 }
 
 bool wikiPage::bingo(const std::string& str)

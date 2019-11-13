@@ -16,6 +16,16 @@ class wikiPage;
 
 #include "../web_utils/web_utils.h"
 
+struct ComparatorForPathsLengths
+{
+    bool operator()(const std::deque<std::string>& a, const std::deque<std::string>& b)
+    {
+        return a.size() < b.size();
+    }
+};
+
+using pathsQueue = std::priority_queue<std::deque<std::string>, std::deque<std::deque<std::string>>, ComparatorForPathsLengths>;
+
 class wikiPage
 {
 public:
@@ -34,7 +44,7 @@ public:
 
     void getWikiPageLinks();
 
-    wikiPage* getWikiPageLinksRecursively(std::vector<std::deque<std::string>>& paths);
+    void getWikiPageLinksRecursively(pathsQueue& paths);
 
     int numOfLinks() const;
 
