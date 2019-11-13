@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <vector>
 #include <string>
 
 #include <utility>
@@ -42,11 +41,13 @@ public:
     static bool bingo(const std::string& str);
 
     inline const static std::string HITLER = "Adolf Hitler";
-    static unsigned long totalNumOfLinks();
     const static unsigned short MAX_DEPTH = 5;
+    static unsigned long totalNumOfLinks();
+    static unsigned long totalNumOfProcessedLinks();
 
 protected:
     static unsigned long _totalNumOfLinks;
+    static unsigned long _totalNumOfProcessedLinks;
 
     int _depth;
 
@@ -54,5 +55,9 @@ protected:
 
     std::string _page;
     std::vector<wikiPage*> _links{};
+
+    wikiPage* getParent() const;
+    void getAllParents(std::deque<wikiPage*>& parents) const;
+    void getAllParentsPages(std::deque<std::string>& parents) const;
 };
 

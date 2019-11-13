@@ -7,6 +7,7 @@
 #include <utility>
 
 unsigned long wikiPage::_totalNumOfLinks = 0;
+unsigned long wikiPage::_totalNumOfProcessedLinks = 0;
 
 wikiPage::wikiPage(int depth, std::string  page, std::vector<wikiPage*> links, wikiPage* parent) :
 _depth(depth), _parent(parent), _page(std::move(page)), _links(std::move(links))
@@ -60,6 +61,11 @@ unsigned long wikiPage::totalNumOfLinks()
     return wikiPage::_totalNumOfLinks;
 }
 
+unsigned long wikiPage::totalNumOfProcessedLinks()
+{
+    return wikiPage::_totalNumOfProcessedLinks;
+}
+
 void wikiPage::getWikiPageLinks()
 {
     web_utils::getPageLinks(this);
@@ -67,7 +73,14 @@ void wikiPage::getWikiPageLinks()
 
 wikiPage* wikiPage::getWikiPageLinksRecursively(std::vector<std::deque<std::string>>& paths)
 {
-//    std::cout << this->_page << ' ' << (this->_page == "Adolf Hitler") << ' ' << this->_depth << '\n';
+    wikiPage::_totalNumOfProcessedLinks++;
+
+    std::cout << this->_page << ' ' << wikiPage::bingo(this->_page) << ' ' << this->_depth << '\n';
+
+//    out << paths.size() << '\n';
+
+    if(paths.size() == 14)
+        return nullptr;
 
     if (this->_depth == wikiPage::MAX_DEPTH)
         return nullptr;
@@ -78,31 +91,22 @@ wikiPage* wikiPage::getWikiPageLinksRecursively(std::vector<std::deque<std::stri
     cache_utils::visitPage(this->_page);
 
     this->getWikiPageLinks();
-
-    auto begin = this->_links.begin();
-    auto end = this->_links.end();
-    auto linkIter = std::find_if(begin, end, [](wikiPage *link) {
-        return wikiPage::bingo(link->_page);
-    });
-
-    if (linkIter != end)
+    for (auto& link : this->_links)
     {
-        std::deque<std::string> deq;
-        deq.push_back(this->_page);
-        paths.push_back(deq);
-        return *linkIter;
-    }
-
-    for(auto& link : this->_links)
-    {
-        if(link->getWikiPageLinksRecursively(paths))
+        if(wikiPage::bingo(link->_page))
         {
-            paths.front().push_front(this->_page);
+            std::deque<std::string> deq;
+            deq.push_front(this->_page);
+            this->getAllParentsPages(deq);
+            paths.push_back(deq);
+
             return this;
         }
+        else
+            link->getWikiPageLinksRecursively(paths);
     }
 
-    return nullptr;
+    return this;
 }
 
 bool wikiPage::bingo(const std::string& str)
@@ -116,3 +120,31 @@ bool wikiPage::bingo(const std::string& str)
 
     return it != str.end();
 }
+
+wikiPage *wikiPage::getParent() const
+{
+    return this->_parent;
+}
+
+void wikiPage::getAllParents(std::deque<wikiPage *>& parents) const
+{
+    if(!this->_parent)
+        return;
+
+    parents.push_back(this->_parent);
+    this->getAllParents(parents);
+}
+
+void wikiPage::getAllParentsPages(std::deque<std::string>& parents) const
+{
+//    std::cout << "In recursion\n";
+//    return;
+
+    if(!this->_parent)
+        return;
+
+    parents.push_front(this->_parent->_page);
+    this->_parent->getAllParentsPages(parents);
+}
+
+
