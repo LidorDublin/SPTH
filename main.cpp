@@ -8,6 +8,11 @@
 
 #define DEFAULT_TEST_PAGE "google"
 
+#define ANSII "\033["
+#define ANSII_RESET ANSII"0m"
+#define ANSII_BOLD ANSII"1m"
+#define ANSII_UNDERLINE ANSII"4m"
+
 using std::cout;
 
 void handler(sig_atomic_t s);
@@ -19,24 +24,29 @@ int main(int argc, char** argv)
     std::cout << std::boolalpha;
 
     wikiPage links(argc > 1 ?  argv[1] : DEFAULT_TEST_PAGE);
-//    cout << links.getPage() << '\n';
 
-//    links.getWikiPageLinks();
-    std::queue<std::string> q;
-    auto _ = links.getWikiPageLinksRecursively(q);
-    std::cout << (!_ ? "Nullptr" : _->getPage()) << '\n';
+//    std::priority_queue<std::deque<std::string>> paths;
+    pathsQueue paths;
+    links.getWikiPageLinksRecursively(paths);
 
-    while(!q.empty())
+    std::cout << "\n--------------------------------------------\n";
+    std::cout << ANSII_UNDERLINE "Paths found" ANSII_RESET ": " << '\n';
+//    for (const auto& path : paths)
+//    {
+//        for (const auto &page : path)
+//            std::cout << page << " -> ";
+//        std::cout << "Adolf Hitler\n";
+//    }
+
+//    for (const auto& path : paths)
+    while(!paths.empty())
     {
-        std::cout << q.front() << (1 == q.size() ? "\n" : " -> ");
-        q.pop();
+        for (const auto &page : paths.top())
+            std::cout << page << " -> ";
+        std::cout << "Adolf Hitler\n";
+
+        paths.pop();
     }
-
-//    for(auto& link : links.getLinks())
-//        std::cout << link->getPage() << '\n';
-
-//    cout << wikiPage::totalNumOfLinks() << '\n';
-//    cout << links.numOfLinks() << '\n';
 
     printSummary();
     return 0;
@@ -50,9 +60,10 @@ void handler(sig_atomic_t)
 
 void printSummary()
 {
-    std::cout << "\n--------------------------------------------\n";
+    std::cout << "\n\n--------------------------------------------\n";
     std::cout << "Summary:\n\n";
-    std::cout << "Total number of links collected: " << wikiPage::totalNumOfLinks() << '\n';
-    std::cout << "Number of visited links: " << cache_utils::_visitedPages.size() << '\n';
+    std::cout << "Total number of links " ANSII_UNDERLINE "collected" ANSII_RESET ": " << wikiPage::totalNumOfLinks() << '\n';
+    std::cout << "Total number of links " ANSII_UNDERLINE "processed" ANSII_RESET ": " << wikiPage::totalNumOfProcessedLinks() << '\n';
+    std::cout << "Number of uniquely visited links: " << cache_utils::_visitedPages.size() << '\n';
     std::cout << "Number of revisited links: " << cache_utils::timesRevisited << '\n';
 }

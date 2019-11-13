@@ -4,20 +4,23 @@
 
 #include "wikiPage.h"
 
+#include <utility>
+
 unsigned long wikiPage::_totalNumOfLinks = 0;
+unsigned long wikiPage::_totalNumOfProcessedLinks = 0;
 
-wikiPage::wikiPage(int depth, std::string page, std::vector<wikiPage*> value)
+wikiPage::wikiPage(int depth, std::string  page, std::vector<wikiPage*> links, wikiPage* parent) :
+_depth(depth), _parent(parent), _page(std::move(page)), _links(std::move(links))
 {
-    wikiPage::_totalNumOfLinks += value.size();
-    wikiPage(depth, std::move(page));
-    this->_links = std::move(value);
+    wikiPage::_totalNumOfLinks += links.size();
 }
 
-wikiPage::wikiPage(int depth, std::string page) : _depth(depth), _page(std::move(page)), _links(std::vector<wikiPage*>())
+wikiPage::wikiPage(int depth, std::string page, wikiPage* parent) :
+wikiPage(depth, std::move(page), std::vector<wikiPage*>(), parent)
 {
 }
 
-wikiPage::wikiPage(std::string page) : wikiPage(1, std::move(page))
+wikiPage::wikiPage(std::string page) : wikiPage(1, std::move(page), nullptr)
 {
 }
 
@@ -35,8 +38,7 @@ void wikiPage::addLink(wikiPage* link)
 
 void wikiPage::addLink(std::string link)
 {
-    this->_links.push_back(new wikiPage(this->_depth + 1, std::move(link)));
-    wikiPage::_totalNumOfLinks++;
+    this->addLink(new wikiPage(this->_depth + 1, std::move(link), this));
 }
 
 const std::string &wikiPage::getPage() const
@@ -59,41 +61,52 @@ unsigned long wikiPage::totalNumOfLinks()
     return wikiPage::_totalNumOfLinks;
 }
 
+unsigned long wikiPage::totalNumOfProcessedLinks()
+{
+    return wikiPage::_totalNumOfProcessedLinks;
+}
+
 void wikiPage::getWikiPageLinks()
 {
     web_utils::getPageLinks(this);
 }
 
-wikiPage* wikiPage::getWikiPageLinksRecursively(std::queue<std::string>& q)
+void wikiPage::getWikiPageLinksRecursively(pathsQueue& paths)
 {
-//    std::cout << this->_page << ' ' << (this->_page == "Adolf Hitler") << ' ' << this->_depth << '\n';
+    wikiPage::_totalNumOfProcessedLinks++;
+
+//    std::cout << this->_page << ' ' << wikiPage::bingo(this->_page) << ' ' << this->_depth << '\n';
+
+    if(paths.size() == 25)
+        return;
 
     if (this->_depth == wikiPage::MAX_DEPTH)
-        return nullptr;
+        return;
 
     if(cache_utils::isPageVisited(this->_page))
-        return nullptr;
+        return;
 //    Insert page to visitedPages caching set
     cache_utils::visitPage(this->_page);
 
-    q.push(this->_page);
     this->getWikiPageLinks();
+    for (auto& link : this->_links)
+    {
+        if(wikiPage::bingo(link->_page))
+        {
+            std::cout << "Found " << paths.size() + 1 << " paths already!\t|  ";
 
-    auto begin = this->_links.begin();
-    auto end = this->_links.end();
-    auto linkIter = std::find_if(begin, end, [](wikiPage *link) {
-        return wikiPage::bingo(link->_page);
-    });
-
-    if (linkIter != end)
-        return *linkIter;
-
-    for(auto& link : this->_links)
-        if(auto page = link->getWikiPageLinksRecursively(q))
-            return page;
-
-    q.pop();
-    return nullptr;
+            std::deque<std::string> deq;
+            deq.push_front(this->_page);
+            this->getAllParentsPages(deq);
+            std::for_each(deq.begin(), deq.end(), [](const std::string& page){
+                std::cout << page << " -> ";
+            });
+            std::cout << wikiPage::HITLER << '\n';
+            paths.push(deq);
+        }
+        else
+            link->getWikiPageLinksRecursively(paths);
+    }
 }
 
 bool wikiPage::bingo(const std::string& str)
@@ -107,3 +120,31 @@ bool wikiPage::bingo(const std::string& str)
 
     return it != str.end();
 }
+
+wikiPage *wikiPage::getParent() const
+{
+    return this->_parent;
+}
+
+void wikiPage::getAllParents(std::deque<wikiPage *>& parents) const
+{
+    if(!this->_parent)
+        return;
+
+    parents.push_back(this->_parent);
+    this->getAllParents(parents);
+}
+
+void wikiPage::getAllParentsPages(std::deque<std::string>& parents) const
+{
+//    std::cout << "In recursion\n";
+//    return;
+
+    if(!this->_parent)
+        return;
+
+    parents.push_front(this->_parent->_page);
+    this->_parent->getAllParentsPages(parents);
+}
+
+
