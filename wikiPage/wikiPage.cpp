@@ -75,11 +75,9 @@ wikiPage* wikiPage::getWikiPageLinksRecursively(std::vector<std::deque<std::stri
 {
     wikiPage::_totalNumOfProcessedLinks++;
 
-    std::cout << this->_page << ' ' << wikiPage::bingo(this->_page) << ' ' << this->_depth << '\n';
+//    std::cout << this->_page << ' ' << wikiPage::bingo(this->_page) << ' ' << this->_depth << '\n';
 
-//    out << paths.size() << '\n';
-
-    if(paths.size() == 14)
+    if(paths.size() == 16)
         return nullptr;
 
     if (this->_depth == wikiPage::MAX_DEPTH)
@@ -95,6 +93,8 @@ wikiPage* wikiPage::getWikiPageLinksRecursively(std::vector<std::deque<std::stri
     {
         if(wikiPage::bingo(link->_page))
         {
+            std::cout << "Found " << paths.size() + 1 << " paths already!\n";
+
             std::deque<std::string> deq;
             deq.push_front(this->_page);
             this->getAllParentsPages(deq);
