@@ -7,7 +7,7 @@
 namespace cache_utils
 {
     unsigned long timesRevisited = 0;
-    std::set<std::string> _visitedPages;
+    std::map<std::string, uint8_t > _visitedPages;
 
     bool _cacheDirExists()
     {
@@ -124,19 +124,21 @@ namespace cache_utils
         cache_utils::cacheFile(links->getPage(), links->getLinks());
     }
 
-    bool isPageVisited(const std::string& page)
+    bool isPageVisited(const std::string& page, const uint8_t depth)
     {
-        if(cache_utils::_visitedPages.find(page) != cache_utils::_visitedPages.end())
+        auto it = cache_utils::_visitedPages.find(page);
+        if(it != cache_utils::_visitedPages.end() && it->second < depth)
         {
             timesRevisited++;
             return true;
         }
 
+        cache_utils::visitPage(page, depth);
         return false;
     }
 
-    void visitPage(const std::string& page)
+    void visitPage(const std::string &page, const uint8_t depth)
     {
-        cache_utils::_visitedPages.insert(page);
+        cache_utils::_visitedPages[page] = depth;
     }
 }

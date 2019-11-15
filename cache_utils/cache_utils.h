@@ -11,7 +11,7 @@
 #include <vector>
 
 #include <algorithm>
-#include <set>
+#include <map>
 
 #include "../wikiPage/wikiPage.h"
 
@@ -32,11 +32,11 @@ namespace cache_utils
     bool cacheFile(const std::string& page, const std::vector<std::string>& content);
     bool cacheFile(const std::string& page, const std::vector<wikiPage*>& links);
 
-    bool isPageVisited(const std::string& page);
-    void visitPage(const std::string& page);
+    bool isPageVisited(const std::string& page, const uint8_t depth);
+    void visitPage(const std::string &page, const uint8_t depth);
 
     extern unsigned long timesRevisited;
-    extern std::set<std::string> _visitedPages;
+    extern std::map<std::string, uint8_t> _visitedPages;
 
     void getLinksFromJson(const json& content, wikiPage*);
 }

@@ -31,7 +31,7 @@ class wikiPage
 public:
     explicit wikiPage(int depth, std::string  page, std::vector<wikiPage*>  links, wikiPage* parent);
     explicit wikiPage(int depth, std::string page, wikiPage* parent);
-    explicit wikiPage(std::string page);
+    explicit wikiPage(std::string&& page);
 
     virtual ~wikiPage();
 
@@ -46,20 +46,21 @@ public:
 
     void getWikiPageLinksRecursively(pathsQueue& paths);
 
-    int numOfLinks() const;
+    unsigned int numOfLinks() const;
 
     static bool bingo(const std::string& str);
 
     inline const static std::string HITLER = "Adolf Hitler";
-    const static unsigned short MAX_DEPTH = 5;
-    static unsigned long totalNumOfLinks();
-    static unsigned long totalNumOfProcessedLinks();
+    const static uint8_t MAX_DEPTH = 5;
+
+    static uint32_t totalNumOfLinks();
+    static uint32_t totalNumOfProcessedLinks();
 
 protected:
-    static unsigned long _totalNumOfLinks;
-    static unsigned long _totalNumOfProcessedLinks;
+    static uint32_t _totalNumOfLinks;
+    static uint32_t _totalNumOfProcessedLinks;
 
-    int _depth;
+    uint8_t _depth;
 
     wikiPage* _parent;
 

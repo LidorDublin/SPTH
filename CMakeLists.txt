@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SPTH)
 
 # Notify about everything, Set standard to C++17, include curlpp & curl
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++17 -lcurlpp -lcurl")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -std=c++17 -lcurlpp -lcurl")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 

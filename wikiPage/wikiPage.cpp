@@ -6,8 +6,8 @@
 
 #include <utility>
 
-unsigned long wikiPage::_totalNumOfLinks = 0;
-unsigned long wikiPage::_totalNumOfProcessedLinks = 0;
+uint32_t wikiPage::_totalNumOfLinks = 0;
+uint32_t wikiPage::_totalNumOfProcessedLinks = 0;
 
 wikiPage::wikiPage(int depth, std::string  page, std::vector<wikiPage*> links, wikiPage* parent) :
 _depth(depth), _parent(parent), _page(std::move(page)), _links(std::move(links))
@@ -20,7 +20,7 @@ wikiPage(depth, std::move(page), std::vector<wikiPage*>(), parent)
 {
 }
 
-wikiPage::wikiPage(std::string page) : wikiPage(1, std::move(page), nullptr)
+wikiPage::wikiPage(std::string&& page) : wikiPage(1, std::move(page), nullptr)
 {
 }
 
@@ -51,17 +51,17 @@ const std::vector<wikiPage *> &wikiPage::getLinks() const
     return _links;
 }
 
-int wikiPage::numOfLinks() const
+unsigned int wikiPage::numOfLinks() const
 {
     return this->_links.size();
 }
 
-unsigned long wikiPage::totalNumOfLinks()
+uint32_t wikiPage::totalNumOfLinks()
 {
     return wikiPage::_totalNumOfLinks;
 }
 
-unsigned long wikiPage::totalNumOfProcessedLinks()
+uint32_t wikiPage::totalNumOfProcessedLinks()
 {
     return wikiPage::_totalNumOfProcessedLinks;
 }
@@ -77,16 +77,14 @@ void wikiPage::getWikiPageLinksRecursively(pathsQueue& paths)
 
 //    std::cout << this->_page << ' ' << wikiPage::bingo(this->_page) << ' ' << this->_depth << '\n';
 
-    if(paths.size() == 25)
+    if(paths.size() == 15)
         return;
 
     if (this->_depth == wikiPage::MAX_DEPTH)
         return;
 
-    if(cache_utils::isPageVisited(this->_page))
+    if(cache_utils::isPageVisited(this->_page, this->_depth))
         return;
-//    Insert page to visitedPages caching set
-    cache_utils::visitPage(this->_page);
 
     this->getWikiPageLinks();
     for (auto& link : this->_links)
@@ -137,9 +135,6 @@ void wikiPage::getAllParents(std::deque<wikiPage *>& parents) const
 
 void wikiPage::getAllParentsPages(std::deque<std::string>& parents) const
 {
-//    std::cout << "In recursion\n";
-//    return;
-
     if(!this->_parent)
         return;
 
