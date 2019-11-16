@@ -4,10 +4,12 @@
 
 #include "wikiPage.h"
 
-#include <utility>
-
-uint32_t wikiPage::_totalNumOfLinks = 0;
-uint32_t wikiPage::_totalNumOfProcessedLinks = 0;
+std::atomic<uint32_t> wikiPage::_totalNumOfLinks = 0;
+std::atomic<uint32_t> wikiPage::_totalNumOfProcessedLinks = 0;
+std::atomic<uint8_t> wikiPage::_numOfThreads = 0;
+const std::thread::id wikiPage::MAIN_THREAD_ID = std::this_thread::get_id();
+std::mutex wikiPage::_mtx;
+std::atomic<bool> wikiPage::KILL = false;
 
 wikiPage::wikiPage(int depth, std::string  page, std::vector<wikiPage*> links, wikiPage* parent) :
 _depth(depth), _parent(parent), _page(std::move(page)), _links(std::move(links))
@@ -73,12 +75,20 @@ void wikiPage::getWikiPageLinks()
 
 void wikiPage::getWikiPageLinksRecursively(pathsQueue& paths)
 {
-    wikiPage::_totalNumOfProcessedLinks++;
+//    std::cout << std::this_thread::get_id() << ' ' << wikiPage::MAIN_THREAD_ID << ' ' << this->_page << '\n';
 
 //    std::cout << this->_page << ' ' << wikiPage::bingo(this->_page) << ' ' << this->_depth << '\n';
 
-    if(paths.size() == 15)
+    if(wikiPage::KILL)
         return;
+
+    wikiPage::_mtx.lock();
+    if(paths.size() == 50)
+    {
+        wikiPage::_mtx.unlock();
+        return;
+    }
+    wikiPage::_mtx.unlock();
 
     if (this->_depth == wikiPage::MAX_DEPTH)
         return;
@@ -86,25 +96,51 @@ void wikiPage::getWikiPageLinksRecursively(pathsQueue& paths)
     if(cache_utils::isPageVisited(this->_page, this->_depth))
         return;
 
+    wikiPage::_mtx.lock();
+    wikiPage::_totalNumOfProcessedLinks++;
+    wikiPage::_mtx.unlock();
+
     this->getWikiPageLinks();
     for (auto& link : this->_links)
     {
+        if(wikiPage::KILL)
+            break;
+
         if(wikiPage::bingo(link->_page))
         {
-            std::cout << "Found " << paths.size() + 1 << " paths already!\t|  ";
-
             std::deque<std::string> deq;
             deq.push_front(this->_page);
             this->getAllParentsPages(deq);
+
+            wikiPage::_mtx.lock();
+            std::cout << "Found " << paths.size() + 1 << " paths already!\t|  ";
             std::for_each(deq.begin(), deq.end(), [](const std::string& page){
                 std::cout << page << " -> ";
             });
             std::cout << wikiPage::HITLER << '\n';
             paths.push(deq);
+
+            if(paths.size() == 500)
+                wikiPage::KILL = true;
+
+            wikiPage::_mtx.unlock();
         }
         else
-            link->getWikiPageLinksRecursively(paths);
+        {
+            if(wikiPage::_numOfThreads > 5)
+                link->getWikiPageLinksRecursively(paths);
+            else
+            {
+//                wikiPage::_mtx.lock();
+                wikiPage::_numOfThreads++;
+                std::thread(&wikiPage::getWikiPageLinksRecursively, link, std::ref(paths)).detach();
+//                wikiPage::_mtx.unlock();
+            }
+        }
     }
+
+    if(wikiPage::MAIN_THREAD_ID != std::this_thread::get_id())
+        wikiPage::_numOfThreads--;
 }
 
 bool wikiPage::bingo(const std::string& str)
@@ -135,11 +171,16 @@ void wikiPage::getAllParents(std::deque<wikiPage *>& parents) const
 
 void wikiPage::getAllParentsPages(std::deque<std::string>& parents) const
 {
-    if(!this->_parent)
+    if(!this || !this->_parent)
         return;
 
     parents.push_front(this->_parent->_page);
     this->_parent->getAllParentsPages(parents);
+}
+
+uint8_t wikiPage::numOfThreads()
+{
+    return wikiPage::_numOfThreads;
 }
 
 

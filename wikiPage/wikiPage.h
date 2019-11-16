@@ -12,6 +12,12 @@
 #include <deque>
 #include <vector>
 
+#include <thread>
+#include <utility>
+#include <atomic>
+#include <mutex>
+#include <set>
+
 class wikiPage;
 
 #include "../web_utils/web_utils.h"
@@ -51,14 +57,23 @@ public:
     static bool bingo(const std::string& str);
 
     inline const static std::string HITLER = "Adolf Hitler";
+
     const static uint8_t MAX_DEPTH = 5;
 
     static uint32_t totalNumOfLinks();
     static uint32_t totalNumOfProcessedLinks();
+    static uint8_t numOfThreads();
+
+    static const std::thread::id MAIN_THREAD_ID;
+    static std::atomic<bool> KILL;
 
 protected:
-    static uint32_t _totalNumOfLinks;
-    static uint32_t _totalNumOfProcessedLinks;
+    static std::atomic<uint32_t> _totalNumOfLinks;
+    static std::atomic<uint32_t> _totalNumOfProcessedLinks;
+    static std::atomic<uint8_t> _numOfThreads;
+
+    static std::mutex _mtx;
+
 
     uint8_t _depth;
 
