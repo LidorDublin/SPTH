@@ -1,5 +1,5 @@
 #include "wikiPage/wikiPage.h"
-#include "web_utils/web_utils.h"
+#include "thread_utils/thread_utils.h"
 
 #include <iostream>
 #include <csignal>
@@ -13,6 +13,7 @@
 
 using std::cout;
 
+void cleanup();
 void handler(sig_atomic_t s);
 void printSummary();
 void printPaths(pathsQueue& paths);
@@ -20,6 +21,8 @@ void printPaths(pathsQueue& paths);
 int main(int argc, char** argv)
 {
     signal(SIGINT, handler); // Catch the ^C and call handler function
+
+//    std::ios_base::sync_with_stdio(false); // Reference: https://stackoverflow.com/a/31165481/7924484
     std::cout << std::boolalpha; // Allows printing boolean values rather than 0 or 1
 
     wikiPage links(argc > 1 ?  argv[1] : DEFAULT_TEST_PAGE);
@@ -29,8 +32,19 @@ int main(int argc, char** argv)
 
     printPaths(paths);
 
+    cleanup();
     printSummary();
     return 0;
+}
+
+/*
+ * Clean up, release mutexes, wake blocking CVs...
+ */
+void cleanup()
+{
+    thread_utils::finished = true;
+    thread_utils::waitTillFinished.notify_all();
+    thread_utils::m_outputReady.notify_all();
 }
 
 /*
@@ -38,6 +52,7 @@ int main(int argc, char** argv)
  */
 void handler(sig_atomic_t)
 {
+    cleanup();
     printSummary();
     exit(1);
 }

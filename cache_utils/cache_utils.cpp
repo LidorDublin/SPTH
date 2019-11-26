@@ -166,7 +166,7 @@ void cache_utils::getLinksFromJson(const json& content, wikiPage* links)
 bool cache_utils::isPageVisited(const std::string& page, const uint8_t depth)
 {
     auto it = cache_utils::m_visitedPages.find(page);
-    if(it != cache_utils::m_visitedPages.end() && it->second < depth)
+    if(it != cache_utils::m_visitedPages.end() && it->second <= depth)
     {
         timesRevisited++;
         return true;

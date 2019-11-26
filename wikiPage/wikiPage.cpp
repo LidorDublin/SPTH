@@ -3,6 +3,7 @@
 //
 
 #include "wikiPage.h"
+#include "../thread_utils/thread_utils.h"  // Has to be included in the source file rather than in the header file due to circular dependency
 
 uint32_t wikiPage::_totalNumOfLinks = 0;
 uint32_t wikiPage::_totalNumOfProcessedLinks = 0;
@@ -34,80 +35,90 @@ void wikiPage::addLink(wikiPage* link)
 /*
  * Create a new link object and add to vector
  */
-void wikiPage::addLink(std::string link)
+void wikiPage::addLink(const std::string& link)
 {
-    this->addLink(new wikiPage(this->_depth + 1, std::move(link), this));
-}
-
-const std::string &wikiPage::getPage() const
-{
-    return _page;
-}
-
-const std::vector<sharedWikiPage> &wikiPage::getLinks() const
-{
-    return _links;
-}
-
-unsigned long wikiPage::numOfLinks() const
-{
-    return this->_links.size();
-}
-
-uint32_t wikiPage::totalNumOfLinks()
-{
-    return wikiPage::_totalNumOfLinks;
-}
-
-uint32_t wikiPage::totalNumOfProcessedLinks()
-{
-    return wikiPage::_totalNumOfProcessedLinks;
-}
-
-void wikiPage::getWikiPageLinks()
-{
-    web_utils::getPageLinks(this);
+    this->addLink(new wikiPage(this->_depth + 1, link, this));
 }
 
 /*
- * Operate on all the links, recursively, to find the paths to Hitler
+ * Mostly used to split the work between all the threads.
  */
 void wikiPage::getWikiPageLinksRecursively(pathsQueue& paths)
 {
-    // Limit the number of paths since otherwise it will never end (or will it?)
-    if(paths.size() == wikiPage::MAX_NUM_OF_PATHS)
-        return;
+    this->getWikiPageLinks();
 
+    std::thread(&thread_utils::print).detach();
+
+    // If there is 1 thread:
+    if (thread_utils::NUM_OF_THREADS <= 1)
+        this->operateOnRange(this->begin(), this->end(), paths);
+
+    else
+    {
+        const auto& ranges = this->splitLinks();
+        for (const auto& [first, second] : ranges)
+        {
+            if(second - first)
+                std::thread(&wikiPage::operateOnRange, this, first, second, std::ref(paths)).detach();
+        }
+        thread_utils::waitTillFinished.wait(thread_utils::m_waitTillFinished_unqLk);
+    }
+}
+
+/*
+ * The actual function that finds Hitler. Iterates over all links recursively from begin to end.
+ * Args:
+ *      const std::vector<sharedWikiPage>::const_iterator&& begin: The iterator to the beginning of the vector of links.
+ *      const std::vector<sharedWikiPage>::const_iterator&& end: The iterator to the end of the vector of links.
+ */
+void wikiPage::operateOnRange(const sharedWikiPageConstIterator&& begin, const sharedWikiPageConstIterator&& end, pathsQueue& paths)
+{
     // Limit the depth
     if (this->_depth == wikiPage::MAX_DEPTH)
         return;
 
-    // Check if there is a need to operate on this page (if the page was not visited in a higher depth)
-    if(cache_utils::isPageVisited(this->_page, this->_depth))
-        return;
-
-    wikiPage::_totalNumOfProcessedLinks++;
-
-    // Populate vector with links
-    this->getWikiPageLinks();
-
-    for (auto& link : this->_links)
+    for (auto it = begin; it != end; ++it)
     {
-        if(wikiPage::bingo((*link)->_page))
-        {
-            std::cout << "Found " << paths.size() + 1 << " paths already!\t|  ";
+        if(wikiPage::checkFinish(paths))
+            return;
 
-            std::deque<std::string> deq;
-            deq.push_front(this->_page);
-            this->getAllParentsPages(deq);
-            std::for_each(deq.begin(), deq.end(), [](const std::string& page){
-                std::cout << page << " -> ";
-            });
-            std::cout << wikiPage::HITLER << '\n';
-            paths.push(deq);
+        // Dereference check
+        if (!*it || !(*it).get() || !*(*it).get())
+            return;
+
+        wikiPage::_totalNumOfProcessedLinks++;
+
+        const auto& link = *(*it).get();
+        if(wikiPage::bingo(link->_page))
+        {
+            // Store the current path in a dequeue of strings
+            std::deque<std::string> path;
+
+            // Insert Hitler to the end of the path and populate the deque with all the parents pages
+            path.emplace_back(wikiPage::HITLER.data());
+            this->getAllParentsPages(path);
+
+            // Push the deque to the output queue so the printing thread will process it
+            thread_utils::output << path;
+
+            thread_utils::mtx_pathsVector.lock();
+            paths.push(path);
+            thread_utils::mtx_pathsVector.unlock();
         }
-        else
-            (*link)->getWikiPageLinksRecursively(paths);
+        else if (link->_depth < wikiPage::MAX_DEPTH)
+        {
+            // Check if there is a need to operate on this page (if the page was not visited in a higher depth)
+            if(cache_utils::isPageVisited(link->_page, link->_depth))
+                return;
+
+            if (link->_links.empty())
+                link->getWikiPageLinks();
+
+            link->operateOnRange(link->begin(), link->end(), paths);
+
+            if(checkFinish(paths))
+                return;
+        }
     }
 }
 
@@ -141,10 +152,97 @@ void wikiPage::getAllParents(std::deque<wikiPage*>& parents) const
  */
 void wikiPage::getAllParentsPages(std::deque<std::string>& parents) const
 {
+    parents.push_front(this->_page);
+
     if(!this->_parent)
         return;
 
-    parents.push_front(this->_parent->_page);
     this->_parent->getAllParentsPages(parents);
 }
 
+std::vector <std::pair<sharedWikiPageConstIterator, sharedWikiPageConstIterator>> wikiPage::splitLinks() const
+{
+    // Credit: https://codereview.stackexchange.com/a/106837
+
+    std::vector<std::pair<sharedWikiPageConstIterator, sharedWikiPageConstIterator>> ranges{};
+    ranges.reserve(thread_utils::NUM_OF_THREADS);
+
+    auto begin = this->_links.begin();
+    auto end = this->_links.end();
+
+    auto dist = std::distance(begin, end);
+    auto chunk = dist / thread_utils::NUM_OF_THREADS;
+    auto remainder = dist % thread_utils::NUM_OF_THREADS;
+
+    for (size_t i = 0; i < thread_utils::NUM_OF_THREADS - 1; ++i)
+    {
+        auto next_end = std::next(begin, chunk + (remainder ? 1 : 0));
+        ranges.emplace_back(begin, next_end);
+
+        begin = next_end;
+        if (remainder) remainder--;
+    }
+
+    // last chunk
+    ranges.emplace_back(begin, end);
+
+    return ranges;
+}
+
+sharedWikiPageConstIterator wikiPage::begin() const
+{
+    return this->_links.begin();
+}
+
+sharedWikiPageConstIterator wikiPage::end() const
+{
+    return this->_links.end();
+}
+
+bool wikiPage::checkFinish(const pathsQueue& paths) const
+{
+    if(thread_utils::finished)
+        return true;
+
+    // Limit the number of paths to find
+    std::unique_lock<std::mutex> unqLk(thread_utils::mtx_pathsVector);
+    if(paths.size() >= wikiPage::MAX_NUM_OF_PATHS)
+    {
+        thread_utils::waitTillFinished.notify_all();
+        return true;
+    }
+    unqLk.unlock();
+
+    return false;
+}
+
+// Getters and Setters
+const std::string &wikiPage::getPage() const
+{
+    return _page;
+}
+
+const std::vector<sharedWikiPage> &wikiPage::getLinks() const
+{
+    return _links;
+}
+
+unsigned long wikiPage::numOfLinks() const
+{
+    return this->_links.size();
+}
+
+uint32_t wikiPage::totalNumOfLinks()
+{
+    return wikiPage::_totalNumOfLinks;
+}
+
+uint32_t wikiPage::totalNumOfProcessedLinks()
+{
+    return wikiPage::_totalNumOfProcessedLinks;
+}
+
+void wikiPage::getWikiPageLinks()
+{
+    web_utils::getPageLinks(this);
+}

@@ -149,6 +149,9 @@
 		<Unit filename="/home/lidor/Personal/projects/SPTH/main.cpp">
 			<Option target="shortest-path-to-hitler"/>
 		</Unit>
+		<Unit filename="/home/lidor/Personal/projects/SPTH/thread_utils/thread_utils.h">
+			<Option target="shortest-path-to-hitler"/>
+		</Unit>
 		<Unit filename="/home/lidor/Personal/projects/SPTH/web_utils/web_utils.cpp">
 			<Option target="shortest-path-to-hitler"/>
 		</Unit>

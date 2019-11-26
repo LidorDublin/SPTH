@@ -7,10 +7,12 @@
 #include <string>
 #include <deque>
 #include <vector>
+#include <iterator>
 
 #include <iostream>
 
-class wikiPage; // Forward declaration, prevents circular dependencies
+class wikiPage; // Forward declaration, fixes circular dependencies
+
 #include "../web_utils/web_utils.h"
 
 struct ComparatorForPathsLengths
@@ -30,9 +32,10 @@ struct ComparatorForPathsLengths
     }
 };
 
-// Used in order to not write the long line (after the '=' sign)
+// Used in order to not write the long line (the part after the '=' sign)
 using pathsQueue = std::priority_queue<std::deque<std::string>, std::deque<std::deque<std::string>>, ComparatorForPathsLengths>;
 using sharedWikiPage = std::shared_ptr<wikiPage*>;
+using sharedWikiPageConstIterator = std::vector<sharedWikiPage>::const_iterator;
 
 class wikiPage
 {
@@ -47,13 +50,15 @@ public:
 
     // Add link to vector
     void addLink(wikiPage* link);
-    void addLink(std::string link);
+    void addLink(const std::string& link);
 
     // Returns the page as string
     const std::string& getPage() const;
 
     // Returns a vector containing all the links in the current page
     const std::vector<sharedWikiPage>& getLinks() const;
+    sharedWikiPageConstIterator begin() const;
+    sharedWikiPageConstIterator end() const;
 
     // Used to populate the vector of links with the actual links in the current page
     void getWikiPageLinks();
@@ -68,9 +73,10 @@ public:
     static uint32_t totalNumOfLinks();
     static uint32_t totalNumOfProcessedLinks();
 
-    constexpr static std::string_view HITLER = "Adolf Hitler";
+    // Constants
+    constexpr static std::string_view HITLER{"Adolf Hitler"};
     constexpr static uint8_t MAX_DEPTH = 5;
-    constexpr static uint8_t MAX_NUM_OF_PATHS = 15;
+    constexpr static uint16_t MAX_NUM_OF_PATHS = 250;
 
 protected:
     static uint32_t _totalNumOfLinks;
@@ -85,4 +91,10 @@ protected:
 
     void getAllParents(std::deque<wikiPage*>& parents) const;
     void getAllParentsPages(std::deque<std::string>& parents) const;
+
+    void operateOnRange(const sharedWikiPageConstIterator&& begin, const sharedWikiPageConstIterator&& end, pathsQueue& paths);
+
+    std::vector<std::pair<sharedWikiPageConstIterator, sharedWikiPageConstIterator>> splitLinks() const;
+
+    bool checkFinish(const pathsQueue& paths) const;
 };
