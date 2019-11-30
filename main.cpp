@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <csignal>
+#include <unistd.h>
 
 #define DEFAULT_TEST_PAGE "google"
 
@@ -18,6 +19,8 @@ void handler(sig_atomic_t s);
 void printSummary();
 void printPaths(pathsQueue& paths);
 
+pathsQueue paths;
+
 int main(int argc, char** argv)
 {
     signal(SIGINT, handler); // Catch the ^C and call handler function
@@ -27,10 +30,7 @@ int main(int argc, char** argv)
 
     wikiPage links(argc > 1 ?  argv[1] : DEFAULT_TEST_PAGE);
 
-    pathsQueue paths;
     links.getWikiPageLinksRecursively(paths);
-
-    printPaths(paths);
 
     cleanup();
     printSummary();
@@ -42,9 +42,17 @@ int main(int argc, char** argv)
  */
 void cleanup()
 {
+    std::cout << "\n\nCleaning up..." << std::flush;
+
     thread_utils::finished = true;
-    thread_utils::waitTillFinished.notify_all();
     thread_utils::m_outputReady.notify_all();
+
+    // Wait till all threads finish
+    while(thread_utils::numOfThreads) { }
+    thread_utils::waitTillFinished.notify_all();
+
+    // Delete the "Cleaning up..." from tty
+    std::cout << "\r\x1B[K" << std::flush;
 }
 
 /*
@@ -52,9 +60,9 @@ void cleanup()
  */
 void handler(sig_atomic_t)
 {
-    cleanup();
     printSummary();
-    exit(1);
+    cleanup();
+    _exit(1);
 }
 
 /*
@@ -62,6 +70,8 @@ void handler(sig_atomic_t)
  */
 void printSummary()
 {
+    printPaths(paths);
+
     std::cout << "\n\n--------------------------------------------\n";
     std::cout << "Summary:\n\n";
     std::cout << "Total number of links " ANSII_UNDERLINE "collected" ANSII_RESET ": " << wikiPage::totalNumOfLinks() << '\n';
@@ -77,9 +87,12 @@ void printPaths(pathsQueue& paths)
 
     while(!paths.empty())
     {
-        for (const auto &page : paths.top())
-            std::cout << page << " -> ";
-        std::cout << "Adolf Hitler\n";
+        auto&& curr = paths.top();
+
+        for (auto it = curr.begin(); it != curr.end() - 1; ++it)
+            std::cout << *it << " -> ";
+
+        std::cout << curr.back() << '\n';
 
         paths.pop();
     }

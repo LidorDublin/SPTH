@@ -3,14 +3,15 @@
 //
 
 #include "web_utils.h"
+#include "../thread_utils/thread_utils.h"
 
 /*
  * Populate the wikiPage* links' inner vector with pages
  */
 void web_utils::getPageLinks(wikiPage* links)
 {
-    // Validy check
-    if(!web_utils::_isValidPage(links->getPage()))
+    // Validity check
+    if(!web_utils::m_isValidPage(links->getPage()))
         return;
 
     // If file is cached, read from cache
@@ -19,7 +20,7 @@ void web_utils::getPageLinks(wikiPage* links)
 
     // Integrate with WikiAPI to get the pages
     else
-        cache_utils::getLinksFromJson(json::parse(web_utils::_requestPage(links->getPage())), links);
+        cache_utils::getLinksFromJson(json::parse(web_utils::m_getPage(links->getPage())), links);
 }
 
 /*
@@ -31,41 +32,47 @@ void web_utils::getPageLinks(wikiPage* links)
  * Returns:
  *      The result from WikiAPI, as-is
  */
-std::string web_utils::_requestPage(const std::string& page)
+std::string web_utils::m_executeRequest(const std::string& page)
 {
-    std::string _page = page;
-    std::replace(_page.begin(), _page.end(), ' ', '_');
-    try
-    {
-        curlpp::Cleanup cleaner;
-        curlpp::Easy request;
+    curlpp::Easy request;
+    std::stringstream content;
 
-        std::stringstream content;
+    request.setOpt(new curlpp::options::Url(web_utils::m_WIKI_URL + page));
+    request.setOpt(cURLpp::Options::WriteStream(&content));
 
-        request.setOpt(new curlpp::options::Url(web_utils::m_WIKI_URL + _page));
-        request.setOpt(cURLpp::Options::WriteStream(&content));
+    request.perform();
 
-        request.perform();
-
-        return content.str();
-    }
-    catch (curlpp::LogicError& e)
-    {
-        std::cout << e.what() << '\n';
-    }
-    catch (curlpp::RuntimeError& e)
-    {
-        std::cout << e.what() << '\n';
-    }
-    return "Error";
+    return content.str();
 }
 
 /*
  * Check if given page is valid (i.e not containing illegal character)
  */
-bool web_utils::_isValidPage(const std::string& page)
+bool web_utils::m_isValidPage(const std::string& page)
 {
     return page.end() == std::find_if(page.begin(), page.end(), [](char ch){
         return web_utils::m_ILLEGAL_CHARACTERS.find(ch) != std::string::npos;
     });
+}
+
+std::string web_utils::m_getPage(std::string page)
+{
+    std::replace(page.begin(), page.end(), ' ', '_');
+
+    for (int i = 0; i < web_utils::m_RETRY_COUNT; ++i)
+    {
+        try
+        {
+            return m_executeRequest(page);
+        }
+        catch (curlpp::LogicError& e)
+        {
+            thread_utils::coutThreadSafe << "LoginError: '" << e.what() << "' when running '" << __FUNCTION__ << "' with page='" << page << "'\n";
+        }
+        catch (curlpp::RuntimeError& e)
+        {
+            thread_utils::coutThreadSafe << "RuntimeError: '" << e.what() << "' when running '" << __FUNCTION__ << "' with page='" << page << "'\n";
+        }
+    }
+    throw exceptions::NetworkError("Failed to retrieve page links from WikiPedia");
 }

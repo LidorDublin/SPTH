@@ -16,6 +16,7 @@
 
 #include "../wikiPage/wikiPage.h"
 #include "../cache_utils/cache_utils.h"
+#include "../exceptions/exceptions.h"
 
 #include "nlohmann/json.hpp"
 
@@ -28,8 +29,12 @@ namespace web_utils
 
 //private:
     const std::string m_WIKI_URL = "https://en.wikipedia.org/w/api.php?action=parse&prop=links&format=json&page=";
-    constexpr std::string_view m_ILLEGAL_CHARACTERS = "&+/";
+    constexpr std::string_view m_ILLEGAL_CHARACTERS = "șəʿқаз&+/";
+    constexpr uint8_t m_RETRY_COUNT = 3;
 
-    std::string _requestPage(const std::string& page);
-    bool _isValidPage(const std::string& page);
+    std::string m_executeRequest(const std::string& page);
+    std::string m_getPage(std::string page);
+    bool m_isValidPage(const std::string& page);
 }
+
+static_assert(web_utils::m_RETRY_COUNT > 0, "Retry count cannot be equal or smaller than 0");

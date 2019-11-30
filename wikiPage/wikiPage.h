@@ -15,6 +15,10 @@ class wikiPage; // Forward declaration, fixes circular dependencies
 
 #include "../web_utils/web_utils.h"
 
+#define ANSII "\033["
+#define ANSII_RED ANSII"91m"
+#define ANSII_RESET ANSII"0m"
+
 struct ComparatorForPathsLengths
 {
     /*
@@ -61,7 +65,7 @@ public:
     sharedWikiPageConstIterator end() const;
 
     // Used to populate the vector of links with the actual links in the current page
-    void getWikiPageLinks();
+    bool getWikiPageLinks();
     void getWikiPageLinksRecursively(pathsQueue& paths);
 
     // Returns the number of links aka the size of the links vector
