@@ -15,7 +15,8 @@
 
 namespace thread_utils
 {
-    constexpr uint16_t NUM_OF_THREADS = 1;
+    constexpr uint8_t NUM_OF_THREADS = 10;
+    inline std::atomic<uint8_t> numOfThreads = 0;
 
     inline std::mutex mtx_pathsVector;
 
@@ -80,7 +81,7 @@ namespace thread_utils
     }
 
     struct m_cout_threadSafe{};
-    extern m_cout_threadSafe coutThreadSafe;
+    inline m_cout_threadSafe coutThreadSafe;
 
     template <typename T> m_cout_threadSafe& operator<<(m_cout_threadSafe& s, const T& param)
     {
