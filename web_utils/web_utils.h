@@ -30,7 +30,7 @@ namespace web_utils
 
 //private:
     const std::string m_WIKI_GET_PAGE = "https://en.wikipedia.org/w/api.php?action=parse&prop=links&format=json&page=";
-    constexpr std::string_view m_WIKI_RANDOM_PAGE = "https://en.wikipedia.org/w/api.php?action=query&generator=random&format=json";
+    constexpr std::string_view m_WIKI_RANDOM_PAGE = "https://en.wikipedia.org/w/api.php?action=query&generator=random&grnnamespace=0&format=json";
 
     constexpr std::string_view m_ILLEGAL_CHARACTERS = "șəʿқаз&+/";
     constexpr uint8_t m_RETRY_COUNT = 3;
