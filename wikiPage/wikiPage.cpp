@@ -258,7 +258,7 @@ bool wikiPage::getWikiPageLinks()
         web_utils::getPageLinks(this);
         return !this->_links.empty();
     }
-    catch(exceptions::NetworkError& error)
+    catch(exception_utils::NetworkError& error)
     {
         std::cerr << "Failed retrieving page '" << this->_page << "'. Failed with error:\n";
         std::cerr << error.what();

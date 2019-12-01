@@ -40,8 +40,9 @@ bool cache_utils::isCached(const std::string& page)
 {
     if(!cache_utils::m_cacheDirExists()) // Check if caching directory exists
         if(!mkdir(".cache", 0644))  // In case caching directory doesn't exist, create
-//            throw std::exception("Can't create caching directory");
-            throw std::exception();
+        {
+            throw exception_utils::FileError("Can't create caching directory");
+        }
 
     return m_fileExists(page);
 }
@@ -53,13 +54,21 @@ bool cache_utils::isCached(const std::string& page)
 void cache_utils::readFromCache(const std::string& page, wikiPage* links)
 {
     if(!cache_utils::isCached(page))
-//        throw std::exception("File not cached");
-        throw std::exception();
+    {
+        std::stringstream msg;
+        msg << "File not cached" + page << '"';
+
+        throw exception_utils::FileError(msg.str().c_str());
+    }
 
     std::ifstream file(cache_utils::m_returnFormattedName(page));
     if(!file.is_open())
-        // Handle error
-        throw std::exception();
+    {
+        std::stringstream msg;
+        msg << "Could not open file '" + page << '"';
+
+        throw exception_utils::FileError(msg.str().c_str());
+    }
 
     std::string line;
     while(std::getline(file, line))
@@ -78,7 +87,6 @@ bool cache_utils::cacheFile(const std::string& page, const json& content)
 {
     std::ofstream file(cache_utils::m_returnFormattedName(page));
     if(!file.is_open())
-        // Handle error
         return false;
 
     file << content.dump();
@@ -127,15 +135,11 @@ bool cache_utils::cacheFile(const std::string& page, const std::vector<sharedWik
 void cache_utils::getLinksFromJson(const json& content, wikiPage* links)
 {
      if(!content.contains("parse"))
-//              Handle exception
-         throw std::exception();
-//            throw std::exception("JSON not in regular format");
+         throw exception_utils::BadJson("Bad JSON received, no \"parse\" Attribute");
 
-    json temp = content.at("parse");
+    const json& temp = content.at("parse");
     if(!temp.contains("links"))
-//              Handle exception
-        throw std::exception();
-//         throw std::exception("JSON not in regular format");
+        throw exception_utils::BadJson("Bad JSON received, no \"links\" Attribute");
 
 
     // Iterate over the JSON object

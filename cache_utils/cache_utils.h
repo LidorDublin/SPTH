@@ -9,6 +9,7 @@
 #include <map>
 
 #include "../wikiPage/wikiPage.h"
+#include "../exceptions/exceptions.h"
 
 #include "nlohmann/json.hpp"
 

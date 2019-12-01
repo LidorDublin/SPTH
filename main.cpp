@@ -33,7 +33,7 @@ int main()
 
         printSummary();
     }
-    catch(const exceptions::NetworkError& e)
+    catch(const exception_utils::NetworkError& e)
     {
         std::cout << "\n\n";
         std::cerr << e << "\nAborting...";

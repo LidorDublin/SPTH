@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iostream>
 
-namespace exceptions
+namespace exception_utils
 {
     class NetworkError : public std::runtime_error
     {
@@ -19,6 +19,32 @@ namespace exceptions
         [[nodiscard]] const char* what() const noexcept override;
 
         friend std::ostream& operator<<(std::ostream& stream, const NetworkError& e);
+
+    private:
+        std::string m_msg;
+    };
+
+    class BadJson : public std::runtime_error
+    {
+    public:
+        explicit BadJson(const char* msg);
+
+        [[nodiscard]] const char* what() const noexcept override;
+
+        friend std::ostream& operator<<(std::ostream& stream, const BadJson& e);
+
+    private:
+        std::string m_msg;
+    };
+
+    class FileError : public std::runtime_error
+    {
+    public:
+        explicit FileError(const char* msg);
+
+        [[nodiscard]] const char* what() const noexcept override;
+
+        friend std::ostream& operator<<(std::ostream& stream, const BadJson& e);
 
     private:
         std::string m_msg;

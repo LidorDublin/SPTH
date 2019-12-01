@@ -77,7 +77,7 @@ std::string web_utils::m_getPage(std::string page)
             thread_utils::coutThreadSafe << "RuntimeError: '" << e.what() << "' when running '" << __FUNCTION__ << "' with page='" << page << "'\n";
         }
     }
-    throw exceptions::NetworkError("Failed to retrieve page links from WikiPedia");
+    throw exception_utils::NetworkError("Failed to retrieve page links from WikiPedia");
 }
 
 std::string web_utils::getRandomPage()
@@ -132,5 +132,5 @@ std::string web_utils::getRandomPage()
             std::cerr << "Unknown error occurred in function: '" << __FUNCTION__ << "'\n";
         }
     }
-    throw exceptions::NetworkError("Failed to retrieve random page from WikiPedia");
+    throw exception_utils::NetworkError("Failed to retrieve random page from WikiPedia");
 }
