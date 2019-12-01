@@ -6,13 +6,19 @@
 
 namespace exceptions
 {
-    NetworkError::NetworkError(const char *msg) : std::runtime_error(msg) {}
+    NetworkError::NetworkError(const char* msg) : std::runtime_error(msg), m_msg(msg)
+    {
+        this->m_msg = "NetworkError: " + this->m_msg;
+    }
 
     const char* NetworkError::what() const noexcept
     {
-        std::stringstream s;
-        s << "Network error: " << this->m_msg;
+        return this->m_msg.c_str();
+    }
 
-        return s.str().c_str();
+    std::ostream& operator<<(std::ostream& stream, const NetworkError& e)
+    {
+        stream << e.what();
+        return stream;
     }
 }

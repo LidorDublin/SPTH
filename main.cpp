@@ -5,8 +5,6 @@
 #include <csignal>
 #include <unistd.h>
 
-#define DEFAULT_TEST_PAGE "google"
-
 #define ANSII "\033["
 #define ANSII_RESET ANSII"0m"
 #define ANSII_BOLD ANSII"1m"
@@ -21,19 +19,30 @@ void printPaths(pathsQueue& paths);
 
 pathsQueue paths;
 
-int main(int argc, char** argv)
+int main()
 {
     signal(SIGINT, handler); // Catch the ^C and call handler function
 
 //    std::ios_base::sync_with_stdio(false); // Reference: https://stackoverflow.com/a/31165481/7924484
     std::cout << std::boolalpha; // Allows printing boolean values rather than 0 or 1
 
-    wikiPage links(argc > 1 ?  argv[1] : DEFAULT_TEST_PAGE);
+    try
+    {
+        wikiPage links;
+        links.getWikiPageLinksRecursively(paths);
 
-    links.getWikiPageLinksRecursively(paths);
+        printSummary();
+    }
+    catch(const exceptions::NetworkError& e)
+    {
+        std::cout << "\n\n";
+        std::cerr << e << "\nAborting...";
+
+        cleanup();
+        return 1;
+    }
 
     cleanup();
-    printSummary();
     return 0;
 }
 

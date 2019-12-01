@@ -23,6 +23,11 @@ wikiPage::wikiPage(std::string&& page) : wikiPage(1, std::move(page), nullptr)
 {
 }
 
+wikiPage::wikiPage() : _depth(1), _parent(nullptr), _page("")
+{
+    *this = wikiPage(web_utils::getRandomPage());
+}
+
 /*
  * Add link to vector, increments the counter of links
  */
@@ -265,3 +270,4 @@ bool wikiPage::getWikiPageLinks()
 
     return false;
 }
+

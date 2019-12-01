@@ -48,6 +48,7 @@ public:
     explicit wikiPage(int depth, std::string  page, std::vector<sharedWikiPage>  links, wikiPage* parent);
     explicit wikiPage(int depth, std::string page, wikiPage* parent);
     explicit wikiPage(std::string&& page);
+    explicit wikiPage();
 
     // Destructor: marked as default
     virtual ~wikiPage() = default;

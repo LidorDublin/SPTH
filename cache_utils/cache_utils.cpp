@@ -139,7 +139,8 @@ void cache_utils::getLinksFromJson(const json& content, wikiPage* links)
 
 
     // Iterate over the JSON object
-    for(auto&& [idx, link] : temp.at("links").items())
+    auto&& items = temp.at("links").items();
+    for(auto&& [idx, link] : items)
     {
         // if the entry contains "exists" key, it means the page exists. If not, the page doesn't exist
         // "ns" key means namespace. There are many namespaces in the WikiAPI but only namespace 0 is interesting here.
