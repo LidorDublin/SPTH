@@ -19,7 +19,7 @@ void printPaths(pathsQueue& paths);
 
 pathsQueue paths;
 
-int main()
+int main(int argc, char** argv)
 {
     signal(SIGINT, handler); // Catch the ^C and call handler function
 
@@ -28,9 +28,13 @@ int main()
 
     try
     {
-        wikiPage links;
-        links.getWikiPageLinksRecursively(paths);
+        std::unique_ptr<wikiPage> links;
+        if(argc == 2)
+            links = std::make_unique<wikiPage>(wikiPage(argv[1]));
+        else
+            links = std::make_unique<wikiPage>(wikiPage());
 
+        links->getWikiPageLinksRecursively(paths);
         printSummary();
     }
     catch(const exception_utils::NetworkError& e)
