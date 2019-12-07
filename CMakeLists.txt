@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.10)
 
 project(SPTH)
+
+set(CMAKE_CXX_STANDARD 17)
 
 # Notify about everything, Set standard to C++17, include curlpp & curl
 set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Wpedantic -std=c++17 -lcurlpp -lcurl")
@@ -16,4 +18,4 @@ add_subdirectory(nlohmann_json)
 
 find_package(Threads REQUIRED)
 
-target_link_libraries(shortest-path-to-hitler PRIVATE curlpp nlohmann_json::nlohmann_json ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(shortest-path-to-hitler PRIVATE curl curlpp nlohmann_json::nlohmann_json ${CMAKE_THREAD_LIBS_INIT})
