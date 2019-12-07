@@ -17,6 +17,7 @@ Starting from a random page (or a specified page given via ARGV) and crawling al
 * Making it a bit more asynchronous
 
 ## Dependencies & Installation:
+##### Native installation:
 * Make & CMake: On Arch linux, install via `pacman -S make cmake`, On Ubuntu, install via `apt install make cmake`
 * cURLpp: On Arch linux, install from [AUR](https://aur.archlinux.org/packages/libcurlpp/), On Ubuntu, install via `apt install libcurlpp0 libcurl4-openssl-dev libcurlpp-dev`
 
@@ -25,6 +26,11 @@ Starting from a random page (or a specified page given via ARGV) and crawling al
   * cd into the repository directory: `cd spth`
   * Then, build and compile: `cmake . && make`
 
+##### Run inside Docker:
+* Install the repo itself, as specified in the [Native installation](https://github.com/LidorDublin/SPTH#native-installation) section
+* Docker: On Arch linux, install via `pacman -S docker`, On Ubuntu, install via `apt install docker`
+* build the docker image: `docker build -t spth .`
+
 Then run!
 
 ## Usage
@@ -32,6 +38,8 @@ Then run!
 `./shortest-path-to-hitler` - Runs with a random page as a starting point
 
 `./shortest-path-to-hitler PAGE` - Runs with PAGE as a starting point
+
+To run in Docker: `docker run --rm -v $(pwd)/.cache:/spth/.cache it spth:latest`
 
 ---
 
