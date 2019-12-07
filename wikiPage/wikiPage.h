@@ -38,7 +38,7 @@ struct ComparatorForPathsLengths
 
 // Used in order to not write the long line (the part after the '=' sign)
 using pathsQueue = std::priority_queue<std::deque<std::string>, std::deque<std::deque<std::string>>, ComparatorForPathsLengths>;
-using sharedWikiPage = std::shared_ptr<wikiPage*>;
+using sharedWikiPage = std::shared_ptr<wikiPage>;
 using sharedWikiPageConstIterator = std::vector<sharedWikiPage>::const_iterator;
 
 class wikiPage
@@ -55,6 +55,7 @@ public:
 
     // Add link to vector
     void addLink(wikiPage* link);
+    void addLink(wikiPage link);
     void addLink(const std::string& link);
 
     // Returns the page as string

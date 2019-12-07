@@ -14,7 +14,7 @@
 #include "nlohmann/json.hpp"
 
 using nlohmann::json;
-using sharedWikiPage = std::shared_ptr<wikiPage*>;
+using sharedWikiPage = std::shared_ptr<wikiPage>;
 
 namespace cache_utils
 {

@@ -4,6 +4,14 @@
 
 #include "config_parser.h"
 
+void config_parser::initToDefault()
+{
+    for (auto& [key, val] : settings)
+    {
+        *(uint16_t*)val = 5;
+    }
+}
+
 void config_parser::readConfig(const std::string& fileName)
 {
     std::ifstream f(fileName);
@@ -12,6 +20,8 @@ void config_parser::readConfig(const std::string& fileName)
 
 void config_parser::readConfig(std::ifstream& f)
 {
+    initToDefault();
+
     std::string key;
     std::string val;
 

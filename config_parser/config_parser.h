@@ -21,6 +21,7 @@ public:
     static void readConfig(std::ifstream& f);
 
 private:
+    static void initToDefault();
     inline static std::map<std::string, void*> settings {
             {"num_of_threads", (void*)&thread_utils::NUM_OF_THREADS},
             {"max_num_of_paths", (void*)&wikiPage::MAX_NUM_OF_PATHS},

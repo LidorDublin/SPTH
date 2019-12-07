@@ -16,7 +16,7 @@ using std::cout;
 void cleanup();
 void handler(sig_atomic_t s);
 void printSummary();
-void printPaths(pathsQueue& paths);
+void printPaths();
 
 pathsQueue paths;
 
@@ -86,7 +86,7 @@ void handler(sig_atomic_t)
  */
 void printSummary()
 {
-    printPaths(paths);
+    printPaths();
 
     std::cout << "\n\n--------------------------------------------\n";
     std::cout << "Summary:\n\n";
@@ -96,7 +96,7 @@ void printSummary()
     std::cout << "Number of revisited links: " << cache_utils::timesRevisited << '\n';
 }
 
-void printPaths(pathsQueue& paths)
+void printPaths()
 {
     std::cout << "\n--------------------------------------------\n";
     std::cout << ANSII_UNDERLINE "Paths found" ANSII_RESET ": " << '\n';

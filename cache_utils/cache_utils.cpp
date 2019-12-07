@@ -124,7 +124,7 @@ bool cache_utils::cacheFile(const std::string& page, const std::vector<sharedWik
         return false;
 
     for(auto& link : links)
-        file << (*link)->getPage() << '\n';
+        file << (*link).getPage() << '\n';
 
     return true;
 }

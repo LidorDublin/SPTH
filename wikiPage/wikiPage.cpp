@@ -32,20 +32,11 @@ wikiPage::wikiPage() : _depth(1), _parent(nullptr), _page("")
 }
 
 /*
- * Add link to vector, increments the counter of links
- */
-void wikiPage::addLink(wikiPage* link)
-{
-    this->_links.push_back(std::make_shared<wikiPage*>(link));
-    wikiPage::_totalNumOfLinks++;
-}
-
-/*
  * Create a new link object and add to vector
  */
 void wikiPage::addLink(const std::string& link)
 {
-    this->addLink(new wikiPage(this->_depth + 1, link, this));
+    this->_links.push_back(std::make_shared<wikiPage>(wikiPage(this->_depth + 1, link, this)));
 }
 
 /*
@@ -93,13 +84,13 @@ void wikiPage::operateOnRange(const sharedWikiPageConstIterator&& begin, const s
     for (auto it = begin; it != end && !(wikiPage::checkFinish(paths)); ++it)
     {
         // Dereference check
-        if (!*it || !(*it).get() || !*(*it).get())
+        if (!*it || !(*it).get())
             goto exit_function;
 
         wikiPage::_totalNumOfProcessedLinks++;
 
-        const auto& link = *(*it).get();
-        if(wikiPage::bingo(link->_page))
+        auto& link = **it;
+        if(wikiPage::bingo(link._page))
         {
             // Store the current path in a dequeue of strings
             std::deque<std::string> path;
@@ -118,14 +109,14 @@ void wikiPage::operateOnRange(const sharedWikiPageConstIterator&& begin, const s
             paths.push(path);
             thread_utils::mtx_pathsVector.unlock();
         }
-        else if (link->_depth < wikiPage::MAX_DEPTH)
+        else if (link._depth < wikiPage::MAX_DEPTH)
         {
             // Check if there is a need to operate on this page (if the page was not visited in a higher depth)
-            if(cache_utils::isPageVisited(link->_page, link->_depth) || wikiPage::checkFinish(paths))
+            if(cache_utils::isPageVisited(link._page, link._depth) || wikiPage::checkFinish(paths))
                 goto exit_function;
 
-            if (link->_links.empty() && link->getWikiPageLinks())
-                    link->operateOnRange(link->begin(), link->end(), paths);
+            if (link._links.empty() && link.getWikiPageLinks())
+                    link.operateOnRange(link.begin(), link.end(), paths);
         }
     }
 
