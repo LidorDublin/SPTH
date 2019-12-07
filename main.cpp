@@ -1,3 +1,4 @@
+#include "config_parser/config_parser.h"
 #include "wikiPage/wikiPage.h"
 #include "thread_utils/thread_utils.h"
 
@@ -21,6 +22,8 @@ pathsQueue paths;
 
 int main(int argc, char** argv)
 {
+    config_parser::readConfig("config.cfg");
+
     signal(SIGINT, handler); // Catch the ^C and call handler function
 
 //    std::ios_base::sync_with_stdio(false); // Reference: https://stackoverflow.com/a/31165481/7924484

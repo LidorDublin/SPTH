@@ -80,8 +80,8 @@ public:
 
     // Constants
     constexpr static std::string_view HITLER{"Adolf Hitler"};
-    constexpr static uint8_t MAX_DEPTH = 5;
-    constexpr static uint16_t MAX_NUM_OF_PATHS = 250;
+    static uint16_t MAX_DEPTH;
+    static uint16_t MAX_NUM_OF_PATHS;
 
 protected:
     static uint32_t _totalNumOfLinks;

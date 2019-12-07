@@ -15,7 +15,7 @@
 
 namespace thread_utils
 {
-    constexpr uint8_t NUM_OF_THREADS = 10;
+    inline uint8_t NUM_OF_THREADS = 0;
     inline std::atomic<uint8_t> numOfThreads = 0;
 
     inline std::mutex mtx_pathsVector;

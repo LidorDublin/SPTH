@@ -5,6 +5,9 @@
 #include "wikiPage.h"
 #include "../thread_utils/thread_utils.h"  // Has to be included in the source file rather than in the header file due to circular dependency
 
+uint16_t wikiPage::MAX_DEPTH = 0;
+uint16_t wikiPage::MAX_NUM_OF_PATHS = 0;
+
 uint32_t wikiPage::_totalNumOfLinks = 0;
 uint32_t wikiPage::_totalNumOfProcessedLinks = 0;
 
@@ -186,7 +189,7 @@ std::vector <std::pair<sharedWikiPageConstIterator, sharedWikiPageConstIterator>
     auto chunk = dist / thread_utils::NUM_OF_THREADS;
     auto remainder = dist % thread_utils::NUM_OF_THREADS;
 
-    for (size_t i = 0; i < thread_utils::NUM_OF_THREADS - 1; ++i)
+    for (uint16_t i = 0; i < thread_utils::NUM_OF_THREADS - 1; ++i)
     {
         auto next_end = std::next(begin, chunk + (remainder ? 1 : 0));
         ranges.emplace_back(begin, next_end);
